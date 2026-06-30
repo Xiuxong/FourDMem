@@ -1023,9 +1023,15 @@ impl MemoryCore {
         // Guard: don't overwrite disk with empty in-memory state
         let node_count = self.graph.node_count();
         if node_count == 0 {
-            // Check if disk already has data — if so, skip to preserve it
-            if l1_dir.join("facts.jsonl").exists() {
-                return Ok(());
+            // Check if disk already has non-empty data — if so, skip to preserve it
+            let facts_path = l1_dir.join("facts.jsonl");
+            if facts_path.exists() {
+                // Check file size: only skip if file has actual content
+                if let Ok(meta) = fs::metadata(&facts_path) {
+                    if meta.len() > 0 {
+                        return Ok(());
+                    }
+                }
             }
         }
 

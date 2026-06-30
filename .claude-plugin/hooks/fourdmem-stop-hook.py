@@ -70,7 +70,8 @@ try:
                     if r.get('status') in ('added', 'merged'):
                         n += 1
 
-    engine.checkpoint(os.path.dirname(db_path))
+    if engine.graph_node_count() > 0:
+        engine.checkpoint(os.path.dirname(db_path))
     sys.stderr.write('FourDMem stop-hook OK\n')
 except Exception as e:
     sys.stderr.write(f'FourDMem stop-hook error: {e}\n')

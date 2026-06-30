@@ -124,7 +124,8 @@ try:
                         n += 1
 
     # Checkpoint to disk
-    engine.checkpoint(${JSON.stringify(join(projectRoot, "data", "vault"))})
+    if engine.graph_node_count() > 0:
+        engine.checkpoint(${JSON.stringify(join(projectRoot, "data", "vault"))})
 except Exception as e:
     pass
 `;
