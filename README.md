@@ -84,7 +84,7 @@ V4.0 跨越了传统软件工程的边界，从 5 个学科汲取灵感，构建
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/<your-org>/FourDMem.git
+git clone https://github.com/Xiuxong/FourDMem.git
 cd FourDMem
 
 # 2. 初始化 Rust 与 Python 混合环境
