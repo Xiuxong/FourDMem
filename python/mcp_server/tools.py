@@ -636,9 +636,19 @@ def checkpoint_turn(agent_response: str = "") -> str:
 
 def save_memory(content: str, role: str = "user", metadata: str = "{}") -> str:
     """Explicitly save a fact or decision to long-term memory."""
+    import hashlib
+    import mcp_server.state as state
     engine = get_engine()
     from cognition.embed_utils import ingest_safely
+
+    # Content dedup: skip if same content already written this session
+    content_hash = hashlib.md5(content[:500].encode()).hexdigest()
+    if content_hash in state._l0_content_hashes:
+        return json.dumps({"status": "deduplicated", "reason": "duplicate content"}, ensure_ascii=False)
+    state._l0_content_hashes.add(content_hash)
+
     result = ingest_safely(engine, _session_id, role, content, metadata)
+    _post_interaction()
     return result
 
 
