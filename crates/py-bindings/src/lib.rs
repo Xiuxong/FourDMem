@@ -553,6 +553,35 @@ impl FourDMemEngine {
             pyo3::exceptions::PyRuntimeError::new_err(e.to_string())
         })
     }
+
+    /// Mark a branch as counterfactual with structured failure conditions.
+    ///
+    /// `conditions` is a JSON string describing the failure context,
+    /// enabling future re-evaluation when conditions change.
+    #[pyo3(signature = (entity_id, version_seq, reason, conditions = "{}"))]
+    fn abandon_branch_with_conditions(&self, entity_id: &str, version_seq: u64, reason: &str, conditions: &str) -> PyResult<String> {
+        let mut core = self.core.lock().map_err(|e| {
+            pyo3::exceptions::PyRuntimeError::new_err(format!("lock poisoned: {}", e))
+        })?;
+
+        let cond_value: Option<serde_json::Value> = serde_json::from_str(conditions).ok();
+        core.abandon_branch_with_conditions(entity_id, version_seq, reason, cond_value.clone()).map_err(|e| {
+            pyo3::exceptions::PyRuntimeError::new_err(e)
+        })?;
+
+        let response = serde_json::json!({
+            "status": "branch_abandoned",
+            "entity_id": entity_id,
+            "version_seq": version_seq,
+            "reason": reason,
+            "conditions": cond_value,
+            "is_counterfactual": true,
+        });
+
+        serde_json::to_string_pretty(&response).map_err(|e| {
+            pyo3::exceptions::PyRuntimeError::new_err(e.to_string())
+        })
+    }
     /// Re-enable a counterfactual branch by creating a new version.
     ///
     /// Insert-based recovery: old counterfactual stays, new active version created.

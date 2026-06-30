@@ -663,13 +663,24 @@ def reflect(query: str) -> str:
 
 # ── abandon_branch ───────────────────────────────────────────────────────────
 
-def abandon_branch(entity_id: str, reason: str = "") -> str:
-    """Mark a decision branch as abandoned (counterfactual)."""
+def abandon_branch(entity_id: str, reason: str = "", conditions: str = "{}") -> str:
+    """Mark a decision branch as abandoned (counterfactual).
+
+    Args:
+        entity_id: The entity to mark as counterfactual.
+        reason: Why this branch was abandoned.
+        conditions: JSON string describing failure conditions for future re-evaluation.
+                    Example: '{"tool":"redis","approach":"no_eviction","env":{"memory":"1GB"}}'
+    """
     engine = get_engine()
-    engine.abandon_branch(entity_id, reason)
-    _auto_archive("tool", f"abandon_branch: {entity_id}", {"tool": "abandon_branch"})
+    cond_value = json.loads(conditions) if conditions and conditions != "{}" else None
+    if cond_value:
+        engine.abandon_branch_with_conditions(entity_id, 0, reason, json.dumps(cond_value))
+    else:
+        engine.abandon_branch(entity_id, reason)
+    _auto_archive("tool", f"abandon_branch: {entity_id}", {"tool": "abandon_branch", "conditions": cond_value})
     _post_interaction()
-    return json.dumps({"status": "abandoned", "entity_id": entity_id, "reason": reason}, indent=2)
+    return json.dumps({"status": "abandoned", "entity_id": entity_id, "reason": reason, "conditions": cond_value}, indent=2)
 
 
 # ── re_enable_branch ─────────────────────────────────────────────────────────

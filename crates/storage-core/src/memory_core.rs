@@ -884,8 +884,22 @@ impl MemoryCore {
         version_seq: u64,
         reason: &str,
     ) -> Result<(), String> {
+        self.abandon_branch_with_conditions(entity_id, version_seq, reason, None)
+    }
+
+    /// Mark a branch as counterfactual with structured failure conditions.
+    ///
+    /// `conditions` is an optional JSON object describing the failure context,
+    /// enabling future re-evaluation when conditions change.
+    pub fn abandon_branch_with_conditions(
+        &mut self,
+        entity_id: &str,
+        version_seq: u64,
+        reason: &str,
+        conditions: Option<serde_json::Value>,
+    ) -> Result<(), String> {
         self.version_tree
-            .mark_counterfactual(entity_id, version_seq)
+            .mark_counterfactual_with_conditions(entity_id, version_seq, conditions.clone())
             .map_err(|e| e.to_string())?;
 
         // Enrich the node's metadata with the abandonment reason

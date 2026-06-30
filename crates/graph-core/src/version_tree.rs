@@ -201,6 +201,19 @@ impl VersionTree {
         entity_id: &str,
         version_seq: u64,
     ) -> Result<(), VersionError> {
+        self.mark_counterfactual_with_conditions(entity_id, version_seq, None)
+    }
+
+    /// Mark a version as counterfactual with structured failure conditions.
+    ///
+    /// `conditions` is an optional JSON object describing WHY the branch failed,
+    /// enabling future re-evaluation when conditions change.
+    pub fn mark_counterfactual_with_conditions(
+        &mut self,
+        entity_id: &str,
+        version_seq: u64,
+        conditions: Option<serde_json::Value>,
+    ) -> Result<(), VersionError> {
         let key = (entity_id.to_string(), version_seq);
         let node = self
             .nodes
@@ -210,6 +223,11 @@ impl VersionTree {
                 version_seq,
             })?;
         node.is_counterfactual = true;
+        if let Some(cond) = conditions {
+            node.metadata["failure_conditions"] = cond;
+            node.metadata["abandoned_at"] =
+                serde_json::Value::String(chrono::Utc::now().to_rfc3339());
+        }
         Ok(())
     }
     /// Re-enable a counterfactual version by creating a new version that

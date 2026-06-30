@@ -70,6 +70,7 @@ class SignalBus:
             "dream_pruning": 3600.0,       # 1 hour
             "extraction_suggested": 120.0, # 2 min
             "observer_alert": 180.0,       # 3 min
+            "re_evaluation": 600.0,        # 10 min — 条件变化重新评估
         }
         # Max pending signals (FIFO eviction)
         self._max_pending: int = 32

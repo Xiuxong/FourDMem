@@ -285,7 +285,83 @@ def _post_interaction():
                 _run_extraction(get_engine())
                 state._last_extraction_time = now
             except Exception:
-                pass
+        pass
+
+    # ── Condition change monitoring: every 20 interactions ──────────────
+    if state._interaction_count % 20 == 0:
+        _check_condition_changes()
+
+
+def _check_condition_changes():
+    """Check if recent L0 content matches re_eval_keywords from counterfactual scenarios.
+
+    When a condition that led to a past failure changes, push a re_evaluation
+    signal so the Agent can reconsider the abandoned branch.
+    """
+    try:
+        import mcp_server.state as state
+        engine = get_engine()
+
+        # Get recent L0 evidence (last 5 items)
+        recent_raw = engine.get_session_evidence(state._session_id, 5, state._workspace_id)
+        recent = json.loads(recent_raw) if isinstance(recent_raw, str) else recent_raw
+        recent_texts = [e.get("content", "").lower() for e in recent.get("evidence", [])]
+        if not recent_texts:
+            return
+
+        # Scan L2 scenarios for re_eval_keywords
+        vault_root = os.path.join(state._PROJECT_ROOT, "data", "vault")
+        scenarios_dir = os.path.join(vault_root, "scenarios")
+        if not os.path.exists(scenarios_dir):
+            return
+
+        from cognition.signals import get_signal_bus
+        bus = get_signal_bus()
+
+        for fname in os.listdir(scenarios_dir):
+            if not fname.endswith(".md"):
+                continue
+            fpath = os.path.join(scenarios_dir, fname)
+            try:
+                with open(fpath, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Parse YAML frontmatter for re_eval_keywords
+                if not content.startswith("---"):
+                    continue
+                parts = content.split("---", 2)
+                if len(parts) < 3:
+                    continue
+                import yaml
+                meta = yaml.safe_load(parts[1]) or {}
+                keywords = meta.get("re_eval_keywords", [])
+                if not keywords:
+                    continue
+
+                # Check if any recent content matches keywords
+                for text in recent_texts:
+                    matched = [kw for kw in keywords if kw.lower() in text]
+                    if len(matched) >= 2:  # require ≥2 keyword matches to reduce noise
+                        bus.push(
+                            "re_evaluation",
+                            priority=5,
+                            payload={
+                                "scenario_file": fname,
+                                "scenario_title": meta.get("title", ""),
+                                "matched_keywords": matched,
+                                "original_conditions": meta.get("conditions", []),
+                                "question": (
+                                    f"条件可能已变化: '{meta.get('title', '')}' 的失败条件 "
+                                    f"中 {matched} 相关内容近期出现。是否重新评估？"
+                                ),
+                            },
+                        )
+                        logger.info(f"Re-evaluation signal: {fname} matched {matched}")
+                        break  # one signal per scenario per check
+            except Exception:
+                continue
+    except Exception:
+        pass
 
 
 def _persist_signals():
