@@ -1,0 +1,23 @@
+[package]
+name = "graph-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "L1 graph structure, Version Tree, conflict traversal, TDA topology"
+
+[dependencies]
+petgraph = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+bincode = { workspace = true }
+lz4_flex = { workspace = true }
+parking_lot = { workspace = true }
+chrono = { workspace = true }
+thiserror = "1"
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "graph_bench"
+harness = false

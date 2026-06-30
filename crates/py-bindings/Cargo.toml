@@ -1,0 +1,22 @@
+[package]
+name = "py-bindings"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "PyO3 bindings exposing Rust four-dimensional memory to Python"
+
+[lib]
+name = "fourdmem"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { workspace = true }
+storage-core = { path = "../storage-core" }
+graph-core = { path = "../graph-core" }
+retrieval-core = { path = "../retrieval-core" }
+sync-engine = { path = "../sync-engine" }
+evolution-core = { path = "../evolution-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+chrono = { workspace = true }

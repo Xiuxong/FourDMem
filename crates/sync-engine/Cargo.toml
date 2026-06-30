@@ -1,0 +1,15 @@
+[package]
+name = "sync-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "File watcher, MD/YAML frontmatter parser, incremental sync engine"
+
+[dependencies]
+tokio = { workspace = true }
+gray_matter = { workspace = true }
+notify = { workspace = true }
+blake3 = { workspace = true }
+serde = { workspace = true }
+serde_yaml = { workspace = true }
+thiserror = "1"

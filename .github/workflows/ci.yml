@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # ── Linux: full test suite including vector-index feature ─────────────
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo registry & build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: linux-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: linux-cargo-
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Clippy (all features)
+        run: cargo clippy --workspace --exclude py-bindings --features retrieval-core/vector-index -- -D warnings
+
+      - name: Run Rust tests (all features)
+        run: cargo test --workspace --exclude py-bindings --features retrieval-core/vector-index
+
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install maturin & Python deps
+        run: |
+          pip install maturin
+          cd python && pip install -e ".[dev]"
+
+      - name: Build py-bindings
+        run: cd python && maturin develop --release
+
+      - name: Run Python tests
+        run: cd python && pytest tests/ -v
+
+  # ── Windows MSVC: Rust core only (no vector-index, no Python) ───────
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo registry & build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: windows-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: windows-cargo-
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Clippy (no vector-index)
+        run: cargo clippy --workspace --exclude py-bindings -- -D warnings
+
+      - name: Run Rust tests (no vector-index)
+        run: cargo test --workspace --exclude py-bindings

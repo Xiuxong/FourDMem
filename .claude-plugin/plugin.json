@@ -1,0 +1,27 @@
+{
+  "name": "fourdmem",
+  "version": "1.0.0",
+  "description": "Four-dimensional cognitive memory for AI agents — L0-L4 layered storage, subjective time, version trees, and cognitive evolution. Auto-captures conversations via hooks.",
+  "author": {
+    "name": "FourDMem"
+  },
+  "license": "MIT",
+  "commands": [],
+  "mcpServers": {
+    "fourdmem": {
+      "command": "python",
+      "args": ["-m", "mcp_server.server"],
+      "env": {}
+    }
+  },
+  "keywords": [
+    "memory",
+    "ai",
+    "agent",
+    "cognitive",
+    "mcp",
+    "four-dimensional",
+    "evolution"
+  ],
+  "repository": "https://github.com/FourDMem/FourDMem"
+}

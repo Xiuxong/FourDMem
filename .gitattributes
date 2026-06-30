@@ -1,0 +1,30 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Rust
+*.rs text diff=rust
+*.toml text
+
+# Python
+*.py text diff=python
+
+# Markdown
+*.md text diff=markdown
+
+# YAML/JSON
+*.yml text
+*.yaml text
+*.json text
+
+# Shell scripts
+*.sh text eol=lf
+*.ps1 text eol=crlf
+
+# Binary files
+*.db binary
+*.bin binary
+*.idx binary
+*.so binary
+*.dll binary
+*.dylib binary
+*.pyd binary

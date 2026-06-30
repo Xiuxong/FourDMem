@@ -1,0 +1,58 @@
+# ── Rust ──────────────────────────────────────────────
+target/
+Cargo.lock
+
+# ── Python ────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.pytest_cache/
+
+# ── Database & Binary Data ────────────────────────────
+*.db
+*.db-journal
+*.db-wal
+*.bin
+data/vault/
+data/workspaces/
+data/snapshots/
+data/cognition/
+data/genome/
+data/benchmarks/
+data/.archive/
+data/plugins/
+
+# ── Models & Backups ──────────────────────────────────
+.models/
+backups/
+results/
+
+# ── Tool indexes ──────────────────────────────────────
+.codegraph/
+.reasonix/
+
+# ── IDE & OS ──────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Build artifacts ───────────────────────────────────
+*.so
+*.dylib
+*.dll
+*.pyd
+*.pdb
+
+# ── Environment ───────────────────────────────────────
+.env
+.env.local

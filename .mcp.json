@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "FourDMem": {
+      "command": "python",
+      "args": ["-m", "mcp_server.server", "--workspace", "FourDMem"],
+      "cwd": "python",
+      "env": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    }
+  }
+}

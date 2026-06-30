@@ -1,0 +1,27 @@
+# FourDMem Docker Compose — one-command deployment
+# Usage: docker compose up fourdmem-mcp
+#
+# For Claude Code integration, add to .mcp.json:
+# {
+#   "mcpServers": {
+#     "fourdmem": {
+#       "command": "docker",
+#       "args": ["compose", "run", "--rm", "-i", "fourdmem-mcp"]
+#     }
+#   }
+# }
+
+services:
+  fourdmem-mcp:
+    build: .
+    stdin_open: true
+    volumes:
+      - fourdmem-data:/app/data
+    environment:
+      - FOURDMEM_WORKSPACE=default
+    restart: unless-stopped
+
+  # Optional: persistent data volume
+volumes:
+  fourdmem-data:
+    driver: local

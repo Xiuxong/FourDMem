@@ -84,8 +84,8 @@ V4.0 跨越了传统软件工程的边界，从 5 个学科汲取灵感，构建
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/your-org/agent-memory-core.git
-cd agent-memory-core
+git clone https://github.com/<your-org>/FourDMem.git
+cd FourDMem
 
 # 2. 初始化 Rust 与 Python 混合环境
 make init
@@ -93,5 +93,5 @@ make init
 # 3. 启动 MCP Server (包含冷启动唤醒与进化引擎守护进程)
 make run-mcp
 
-# 4. 运行认知进化专项测试 (验证范式转移与怪圈自指)
-make test-evolution
+# 4. 运行全部测试
+make test

@@ -1,0 +1,14 @@
+{
+  "name": "fourdmem",
+  "displayName": "FourDMem — Cognitive Agent Memory",
+  "description": "Four-dimensional memory with L0-L4 layers, subjective time, version trees, and cognitive evolution. Auto-captures conversations via post-turn hooks.",
+  "version": "1.0.0",
+  "author": "FourDMem",
+  "license": "MIT",
+  "repository": "https://github.com/FourDMem/FourDMem",
+  "keywords": ["memory", "cognitive", "agent", "mcp", "four-dimensional"],
+  "install": {
+    "command": "pip install fourdmem",
+    "postInstall": "echo 'FourDMem installed. Configure MCP server in your client.'"
+  }
+}

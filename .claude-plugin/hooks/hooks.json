@@ -1,0 +1,27 @@
+{
+  "description": "FourDMem auto-capture hooks — archives conversations at end of each turn",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/fourdmem-stop-hook.py\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/fourdmem-precompact-hook.sh\"",
+            "timeout": 90
+          }
+        ]
+      }
+    ]
+  }
+}

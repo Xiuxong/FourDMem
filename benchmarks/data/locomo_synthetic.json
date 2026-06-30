@@ -1,0 +1,1862 @@
+[
+  {
+    "conversation_id": "synth_000",
+    "sessions": [
+      {
+        "session_id": 1,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "Hi! I just started working at Acme Corp as a staff engineer."
+          },
+          {
+            "role": "assistant",
+            "content": "Welcome to Acme Corp! That's exciting. What team are you on?"
+          },
+          {
+            "role": "user",
+            "content": "I'm on the platform team. My manager is Bob, who's been here for 2 years."
+          },
+          {
+            "role": "assistant",
+            "content": "Great to have an experienced manager. What's your tech stack looking like?"
+          },
+          {
+            "role": "user",
+            "content": "We use Python for the backend, PostgreSQL for the database, and Redis for caching. The CI/CD runs on GitHub Actions."
+          },
+          {
+            "role": "assistant",
+            "content": "Solid stack! Python + PostgreSQL is a proven combination."
+          },
+          {
+            "role": "user",
+            "content": "My first task is to refactor the authentication module. It currently uses session-based auth but we want to migrate to JWT."
+          },
+          {
+            "role": "assistant",
+            "content": "JWT migration is a common pattern. Make sure to handle token refresh and revocation properly."
+          },
+          {
+            "role": "user",
+            "content": "The codebase is about 150K lines. The auth module is in src/auth/ and it's about 3000 lines."
+          },
+          {
+            "role": "assistant",
+            "content": "3000 lines for an auth module is manageable. Focus on the interface boundaries first."
+          }
+        ]
+      },
+      {
+        "session_id": 2,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We had a production incident yesterday. The API response time spiked to 5 seconds."
+          },
+          {
+            "role": "assistant",
+            "content": "That's serious. Did you identify the root cause?"
+          },
+          {
+            "role": "user",
+            "content": "Turns out it was a missing index on the PostgreSQL users table. A full table scan was triggered by a new query in the search endpoint."
+          },
+          {
+            "role": "assistant",
+            "content": "Classic issue. Missing indexes are one of the most common performance problems."
+          },
+          {
+            "role": "user",
+            "content": "We fixed it by adding a composite index on (email, status). Response time dropped back to 50ms."
+          },
+          {
+            "role": "assistant",
+            "content": "Great recovery. 5s to 50ms is a 100x improvement."
+          },
+          {
+            "role": "user",
+            "content": "Bob wants us to add query performance monitoring going forward."
+          },
+          {
+            "role": "assistant",
+            "content": "Proactive monitoring is the right approach. Consider pg_stat_statements for PostgreSQL."
+          },
+          {
+            "role": "user",
+            "content": "We're also adding a slow query log threshold of 200ms."
+          },
+          {
+            "role": "assistant",
+            "content": "200ms is a reasonable threshold for API queries."
+          }
+        ]
+      },
+      {
+        "session_id": 3,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're debating whether to use microservices or keep the monolith for the new payment feature."
+          },
+          {
+            "role": "assistant",
+            "content": "What's driving the discussion?"
+          },
+          {
+            "role": "user",
+            "content": "The payment module needs to be isolated for PCI compliance. But the team is only 5 people."
+          },
+          {
+            "role": "assistant",
+            "content": "With 5 people, a full microservices setup might be overkill. Consider a modular monolith with clear boundaries."
+          },
+          {
+            "role": "user",
+            "content": "We decided to go with a modular monolith. The payment module will be a separate package with its own database schema."
+          },
+          {
+            "role": "assistant",
+            "content": "Good call. Modular monolith gives you isolation without the operational overhead."
+          },
+          {
+            "role": "user",
+            "content": "We're using the Strangler Fig pattern to gradually extract it if needed later."
+          },
+          {
+            "role": "assistant",
+            "content": "Smart. The Strangler Fig pattern is perfect for this kind of gradual migration."
+          },
+          {
+            "role": "user",
+            "content": "The payment integration uses Stripe. We need to handle webhooks for payment status updates."
+          },
+          {
+            "role": "assistant",
+            "content": "Stripe webhooks are reliable. Make sure to verify the webhook signature and handle idempotency."
+          }
+        ]
+      },
+      {
+        "session_id": 4,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "Our test suite takes 45 minutes to run. It's becoming a bottleneck."
+          },
+          {
+            "role": "assistant",
+            "content": "45 minutes is too long. What's the breakdown?"
+          },
+          {
+            "role": "user",
+            "content": "30 minutes is integration tests hitting the real database. 10 minutes is E2E tests. 5 minutes is unit tests."
+          },
+          {
+            "role": "assistant",
+            "content": "The database-bound tests are the bottleneck. Consider parallelizing them or using testcontainers."
+          },
+          {
+            "role": "user",
+            "content": "We tried parallelizing but hit race conditions. The tests share a test database and create conflicting data."
+          },
+          {
+            "role": "assistant",
+            "content": "Use database transactions that rollback after each test, or give each test its own schema."
+          },
+          {
+            "role": "user",
+            "content": "We're going with per-test schema isolation. Each test gets its own schema that's created and dropped."
+          },
+          {
+            "role": "assistant",
+            "content": "That's the cleanest approach. It eliminates race conditions completely."
+          },
+          {
+            "role": "user",
+            "content": "We also added a flaky test detector. If a test fails twice in a row but passes on retry, it's flagged for investigation."
+          },
+          {
+            "role": "assistant",
+            "content": "Flaky test detection is valuable. It helps maintain test suite reliability."
+          }
+        ]
+      },
+      {
+        "session_id": 5,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We need to optimize the data export feature. It currently takes 20 minutes for 1M records."
+          },
+          {
+            "role": "assistant",
+            "content": "What's the current approach?"
+          },
+          {
+            "role": "user",
+            "content": "It loads all records into memory, transforms them, then writes to CSV. We're hitting OOM errors on large exports."
+          },
+          {
+            "role": "assistant",
+            "content": "Classic problem. Switch to streaming: process records in batches and write incrementally."
+          },
+          {
+            "role": "user",
+            "content": "We implemented batch processing with a 10K record batch size. Export time dropped to 3 minutes and memory usage is constant."
+          },
+          {
+            "role": "assistant",
+            "content": "Excellent. 20 minutes to 3 minutes with constant memory is a great improvement."
+          },
+          {
+            "role": "user",
+            "content": "We also added progress tracking. The user can see a progress bar and estimated time remaining."
+          },
+          {
+            "role": "assistant",
+            "content": "Progress tracking is a great UX improvement for long-running operations."
+          },
+          {
+            "role": "user",
+            "content": "Next we're looking at adding async export. The user starts the export, gets a notification when it's ready."
+          },
+          {
+            "role": "assistant",
+            "content": "Async export is the right pattern for large datasets. Use a job queue like Celery or Bull."
+          }
+        ]
+      },
+      {
+        "session_id": 6,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We had a security audit. They found three issues."
+          },
+          {
+            "role": "assistant",
+            "content": "What were the findings?"
+          },
+          {
+            "role": "user",
+            "content": "First, SQL injection in the search endpoint. Second, missing CSRF protection. Third, overly permissive CORS policy."
+          },
+          {
+            "role": "assistant",
+            "content": "All three are common but serious. SQL injection is the highest priority."
+          },
+          {
+            "role": "user",
+            "content": "We fixed the SQL injection by using parameterized queries. The CSRF fix added token validation. CORS was restricted to our domain only."
+          },
+          {
+            "role": "assistant",
+            "content": "Good response. Parameterized queries eliminate SQL injection entirely."
+          },
+          {
+            "role": "user",
+            "content": "We also added rate limiting: 100 requests per minute per user for API endpoints, 10 per minute for auth endpoints."
+          },
+          {
+            "role": "assistant",
+            "content": "Rate limiting is essential. The stricter auth endpoint limit is smart — it slows brute force attacks."
+          },
+          {
+            "role": "user",
+            "content": "Carol suggested adding a WAF. We're evaluating Cloudflare vs AWS WAF."
+          },
+          {
+            "role": "assistant",
+            "content": "Both are solid. Cloudflare is easier to set up, AWS WAF integrates better with the AWS ecosystem."
+          }
+        ]
+      },
+      {
+        "session_id": 7,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're building a real-time notification system. The requirements are: WebSocket-based, supports 10K concurrent connections."
+          },
+          {
+            "role": "assistant",
+            "content": "10K WebSocket connections is achievable. What framework are you considering?"
+          },
+          {
+            "role": "user",
+            "content": "We're using Python with Socket.IO for the WebSocket layer. The notification queue uses RabbitMQ."
+          },
+          {
+            "role": "assistant",
+            "content": "Socket.IO + RabbitMQ is a solid combination for real-time notifications."
+          },
+          {
+            "role": "user",
+            "content": "We need to handle reconnection gracefully. If a user disconnects, they should receive missed notifications on reconnect."
+          },
+          {
+            "role": "assistant",
+            "content": "Store notifications in a per-user queue. On reconnect, flush the queue before streaming new ones."
+          },
+          {
+            "role": "user",
+            "content": "We implemented a notification store with a 7-day TTL. Notifications are persisted in {tech['db']} and cached in {tech['cache']}."
+          },
+          {
+            "role": "assistant",
+            "content": "7-day TTL is reasonable. The {tech['db']} + {tech['cache']} combo gives you durability and speed."
+          },
+          {
+            "role": "user",
+            "content": "Load testing showed we can handle 15K concurrent connections with 99th percentile latency under 100ms."
+          },
+          {
+            "role": "assistant",
+            "content": "15K connections with p99 under 100ms is excellent performance."
+          }
+        ]
+      },
+      {
+        "session_id": 8,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're revamping the deployment pipeline. Currently it takes 30 minutes from merge to production."
+          },
+          {
+            "role": "assistant",
+            "content": "30 minutes is long. What's the breakdown?"
+          },
+          {
+            "role": "user",
+            "content": "Build: 5 min. Tests: 15 min. Staging deploy: 5 min. Smoke tests: 5 min."
+          },
+          {
+            "role": "assistant",
+            "content": "Tests are the bottleneck. Can you parallelize or cache dependencies?"
+          },
+          {
+            "role": "user",
+            "content": "We parallelized the test suite into 4 workers. Test time dropped from 15 to 4 minutes."
+          },
+          {
+            "role": "assistant",
+            "content": "Nice. 4x parallelization with near-linear speedup."
+          },
+          {
+            "role": "user",
+            "content": "We also added Docker layer caching. Build time dropped from 5 to 2 minutes."
+          },
+          {
+            "role": "assistant",
+            "content": "Layer caching is a big win for Docker builds."
+          },
+          {
+            "role": "user",
+            "content": "Total pipeline time is now 16 minutes. We're targeting under 10 minutes."
+          },
+          {
+            "role": "assistant",
+            "content": "16 minutes is good. Consider running smoke tests in parallel with staging deploy."
+          },
+          {
+            "role": "user",
+            "content": "We also added automatic rollback. If error rate exceeds 5% within 5 minutes of deploy, it auto-reverts."
+          },
+          {
+            "role": "assistant",
+            "content": "Automatic rollback based on error rate is a great safety net."
+          }
+        ]
+      },
+      {
+        "session_id": 9,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're switching from 2-week sprints to Kanban."
+          },
+          {
+            "role": "assistant",
+            "content": "What prompted the change?"
+          },
+          {
+            "role": "user",
+            "content": "Too many interrupts. We'd plan a sprint and then get 3 urgent production issues that blow up the plan."
+          },
+          {
+            "role": "assistant",
+            "content": "Kanban is better for high-interrupt environments. It gives you more flexibility."
+          },
+          {
+            "role": "user",
+            "content": "We set WIP limits: max 3 items per developer, max 8 items in the review column."
+          },
+          {
+            "role": "assistant",
+            "content": "WIP limits are the key to Kanban. They prevent context switching and improve flow."
+          },
+          {
+            "role": "user",
+            "content": "We also introduced code review SLAs. PRs must be reviewed within 4 hours. David is the review champion."
+          },
+          {
+            "role": "assistant",
+            "content": "4-hour SLA is aggressive but achievable with WIP limits. Review champions help maintain velocity."
+          },
+          {
+            "role": "user",
+            "content": "Our lead time dropped from 5 days to 2 days after switching to Kanban."
+          },
+          {
+            "role": "assistant",
+            "content": "5 days to 2 days is a significant improvement. The WIP limits are working."
+          }
+        ]
+      },
+      {
+        "session_id": 10,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're planning the Q3 roadmap. Three big items."
+          },
+          {
+            "role": "assistant",
+            "content": "What's on the roadmap?"
+          },
+          {
+            "role": "user",
+            "content": "First, migrate from REST to GraphQL for the mobile API. Second, add multi-tenancy support. Third, implement the audit log."
+          },
+          {
+            "role": "assistant",
+            "content": "All three are significant. What's the priority order?"
+          },
+          {
+            "role": "user",
+            "content": "Multi-tenancy is top priority — it's blocking our enterprise sales. GraphQL is second. Audit log is third."
+          },
+          {
+            "role": "assistant",
+            "content": "Multi-tenancy first makes sense if it's blocking revenue."
+          },
+          {
+            "role": "user",
+            "content": "For multi-tenancy, we're going with a shared database, separate schema approach."
+          },
+          {
+            "role": "assistant",
+            "content": "Shared DB separate schema is a good middle ground between shared everything and separate databases."
+          },
+          {
+            "role": "user",
+            "content": "The GraphQL migration will use Apollo Server. We'll keep the REST API for backward compatibility."
+          },
+          {
+            "role": "assistant",
+            "content": "Running both GraphQL and REST in parallel is the safe migration path."
+          },
+          {
+            "role": "user",
+            "content": "Bob wants the audit log to be immutable. We're considering an append-only table with cryptographic chaining."
+          },
+          {
+            "role": "assistant",
+            "content": "Cryptographic chaining gives you tamper-evidence. It's the gold standard for audit logs."
+          }
+        ]
+      }
+    ],
+    "qa": [
+      {
+        "question": "Where does Alice work?",
+        "answer": "Acme Corp",
+        "type": "single-session",
+        "evidence_session_ids": [
+          1
+        ]
+      },
+      {
+        "question": "What programming language does Alice's team use?",
+        "answer": "Python",
+        "type": "single-session",
+        "evidence_session_ids": [
+          1
+        ]
+      },
+      {
+        "question": "What was the root cause of the production incident?",
+        "answer": "Missing index on the PostgreSQL users table",
+        "type": "single-session",
+        "evidence_session_ids": [
+          2
+        ]
+      },
+      {
+        "question": "How was the production incident fixed?",
+        "answer": "Added a composite index on (email, status)",
+        "type": "single-session",
+        "evidence_session_ids": [
+          2
+        ]
+      },
+      {
+        "question": "What architecture decision was made for the payment module?",
+        "answer": "Modular monolith with separate package and own database schema",
+        "type": "single-session",
+        "evidence_session_ids": [
+          3
+        ]
+      },
+      {
+        "question": "How long does the test suite take to run?",
+        "answer": "45 minutes (30 min integration, 10 min E2E, 5 min unit)",
+        "type": "single-session",
+        "evidence_session_ids": [
+          4
+        ]
+      },
+      {
+        "question": "What was the data export time before and after optimization?",
+        "answer": "20 minutes before, 3 minutes after batch processing optimization",
+        "type": "single-session",
+        "evidence_session_ids": [
+          5
+        ]
+      },
+      {
+        "question": "What security issues were found in the audit?",
+        "answer": "SQL injection, missing CSRF protection, overly permissive CORS policy",
+        "type": "single-session",
+        "evidence_session_ids": [
+          6
+        ]
+      },
+      {
+        "question": "What is the rate limit for API endpoints?",
+        "answer": "100 requests per minute per user",
+        "type": "single-session",
+        "evidence_session_ids": [
+          6
+        ]
+      },
+      {
+        "question": "How many concurrent WebSocket connections can the notification system handle?",
+        "answer": "15K concurrent connections with p99 under 100ms",
+        "type": "single-session",
+        "evidence_session_ids": [
+          7
+        ]
+      },
+      {
+        "question": "What database does Alice's team use and what index was added after the incident?",
+        "answer": "PostgreSQL, composite index on (email, status)",
+        "type": "multi-session",
+        "evidence_session_ids": [
+          1,
+          2
+        ]
+      },
+      {
+        "question": "What is the deployment pipeline time and what optimizations were applied?",
+        "answer": "16 minutes total, optimized with 4x test parallelization and Docker layer caching",
+        "type": "multi-session",
+        "evidence_session_ids": [
+          4,
+          8
+        ]
+      },
+      {
+        "question": "What testing strategy was adopted and how does it affect the deployment pipeline?",
+        "answer": "Per-test schema isolation, parallelized to 4 workers, test time dropped from 15 to 4 minutes",
+        "type": "multi-session",
+        "evidence_session_ids": [
+          4,
+          8
+        ]
+      },
+      {
+        "question": "What happened first: the security audit or the architecture decision for payments?",
+        "answer": "The architecture decision came first (session 3), then the security audit (session 6)",
+        "type": "temporal",
+        "evidence_session_ids": [
+          3,
+          6
+        ]
+      },
+      {
+        "question": "In what order were the performance issues addressed across the project?",
+        "answer": "First API response time (index fix), then data export (batch processing), then deployment pipeline (parallelization)",
+        "type": "temporal",
+        "evidence_session_ids": [
+          2,
+          5,
+          8
+        ]
+      },
+      {
+        "question": "What process changes were made and in what order?",
+        "answer": "First added monitoring after incident, then switched to Kanban, then added code review SLAs",
+        "type": "temporal",
+        "evidence_session_ids": [
+          2,
+          9
+        ]
+      },
+      {
+        "question": "What is the company's annual revenue?",
+        "answer": "This information was not discussed",
+        "type": "adversarial",
+        "evidence_session_ids": []
+      },
+      {
+        "question": "What programming language does the frontend use?",
+        "answer": "The frontend language was not mentioned",
+        "type": "adversarial",
+        "evidence_session_ids": []
+      }
+    ]
+  },
+  {
+    "conversation_id": "synth_001",
+    "sessions": [
+      {
+        "session_id": 1,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "Hi! I just started working at TechFlow as a staff engineer."
+          },
+          {
+            "role": "assistant",
+            "content": "Welcome to TechFlow! That's exciting. What team are you on?"
+          },
+          {
+            "role": "user",
+            "content": "I'm on the platform team. My manager is Carol, who's been here for 4 years."
+          },
+          {
+            "role": "assistant",
+            "content": "Great to have an experienced manager. What's your tech stack looking like?"
+          },
+          {
+            "role": "user",
+            "content": "We use TypeScript for the backend, MongoDB for the database, and Memcached for caching. The CI/CD runs on GitLab CI."
+          },
+          {
+            "role": "assistant",
+            "content": "Solid stack! TypeScript + MongoDB is a proven combination."
+          },
+          {
+            "role": "user",
+            "content": "My first task is to refactor the authentication module. It currently uses session-based auth but we want to migrate to JWT."
+          },
+          {
+            "role": "assistant",
+            "content": "JWT migration is a common pattern. Make sure to handle token refresh and revocation properly."
+          },
+          {
+            "role": "user",
+            "content": "The codebase is about 150K lines. The auth module is in src/auth/ and it's about 3000 lines."
+          },
+          {
+            "role": "assistant",
+            "content": "3000 lines for an auth module is manageable. Focus on the interface boundaries first."
+          }
+        ]
+      },
+      {
+        "session_id": 2,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We had a production incident yesterday. The API response time spiked to 5 seconds."
+          },
+          {
+            "role": "assistant",
+            "content": "That's serious. Did you identify the root cause?"
+          },
+          {
+            "role": "user",
+            "content": "Turns out it was a missing index on the MongoDB users table. A full table scan was triggered by a new query in the search endpoint."
+          },
+          {
+            "role": "assistant",
+            "content": "Classic issue. Missing indexes are one of the most common performance problems."
+          },
+          {
+            "role": "user",
+            "content": "We fixed it by adding a composite index on (email, status). Response time dropped back to 50ms."
+          },
+          {
+            "role": "assistant",
+            "content": "Great recovery. 5s to 50ms is a 100x improvement."
+          },
+          {
+            "role": "user",
+            "content": "Carol wants us to add query performance monitoring going forward."
+          },
+          {
+            "role": "assistant",
+            "content": "Proactive monitoring is the right approach. Consider pg_stat_statements for PostgreSQL."
+          },
+          {
+            "role": "user",
+            "content": "We're also adding a slow query log threshold of 200ms."
+          },
+          {
+            "role": "assistant",
+            "content": "200ms is a reasonable threshold for API queries."
+          }
+        ]
+      },
+      {
+        "session_id": 3,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're debating whether to use microservices or keep the monolith for the new payment feature."
+          },
+          {
+            "role": "assistant",
+            "content": "What's driving the discussion?"
+          },
+          {
+            "role": "user",
+            "content": "The payment module needs to be isolated for PCI compliance. But the team is only 5 people."
+          },
+          {
+            "role": "assistant",
+            "content": "With 5 people, a full microservices setup might be overkill. Consider a modular monolith with clear boundaries."
+          },
+          {
+            "role": "user",
+            "content": "We decided to go with a modular monolith. The payment module will be a separate package with its own database schema."
+          },
+          {
+            "role": "assistant",
+            "content": "Good call. Modular monolith gives you isolation without the operational overhead."
+          },
+          {
+            "role": "user",
+            "content": "We're using the Strangler Fig pattern to gradually extract it if needed later."
+          },
+          {
+            "role": "assistant",
+            "content": "Smart. The Strangler Fig pattern is perfect for this kind of gradual migration."
+          },
+          {
+            "role": "user",
+            "content": "The payment integration uses Stripe. We need to handle webhooks for payment status updates."
+          },
+          {
+            "role": "assistant",
+            "content": "Stripe webhooks are reliable. Make sure to verify the webhook signature and handle idempotency."
+          }
+        ]
+      },
+      {
+        "session_id": 4,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "Our test suite takes 45 minutes to run. It's becoming a bottleneck."
+          },
+          {
+            "role": "assistant",
+            "content": "45 minutes is too long. What's the breakdown?"
+          },
+          {
+            "role": "user",
+            "content": "30 minutes is integration tests hitting the real database. 10 minutes is E2E tests. 5 minutes is unit tests."
+          },
+          {
+            "role": "assistant",
+            "content": "The database-bound tests are the bottleneck. Consider parallelizing them or using testcontainers."
+          },
+          {
+            "role": "user",
+            "content": "We tried parallelizing but hit race conditions. The tests share a test database and create conflicting data."
+          },
+          {
+            "role": "assistant",
+            "content": "Use database transactions that rollback after each test, or give each test its own schema."
+          },
+          {
+            "role": "user",
+            "content": "We're going with per-test schema isolation. Each test gets its own schema that's created and dropped."
+          },
+          {
+            "role": "assistant",
+            "content": "That's the cleanest approach. It eliminates race conditions completely."
+          },
+          {
+            "role": "user",
+            "content": "We also added a flaky test detector. If a test fails twice in a row but passes on retry, it's flagged for investigation."
+          },
+          {
+            "role": "assistant",
+            "content": "Flaky test detection is valuable. It helps maintain test suite reliability."
+          }
+        ]
+      },
+      {
+        "session_id": 5,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We need to optimize the data export feature. It currently takes 20 minutes for 1M records."
+          },
+          {
+            "role": "assistant",
+            "content": "What's the current approach?"
+          },
+          {
+            "role": "user",
+            "content": "It loads all records into memory, transforms them, then writes to CSV. We're hitting OOM errors on large exports."
+          },
+          {
+            "role": "assistant",
+            "content": "Classic problem. Switch to streaming: process records in batches and write incrementally."
+          },
+          {
+            "role": "user",
+            "content": "We implemented batch processing with a 10K record batch size. Export time dropped to 3 minutes and memory usage is constant."
+          },
+          {
+            "role": "assistant",
+            "content": "Excellent. 20 minutes to 3 minutes with constant memory is a great improvement."
+          },
+          {
+            "role": "user",
+            "content": "We also added progress tracking. The user can see a progress bar and estimated time remaining."
+          },
+          {
+            "role": "assistant",
+            "content": "Progress tracking is a great UX improvement for long-running operations."
+          },
+          {
+            "role": "user",
+            "content": "Next we're looking at adding async export. The user starts the export, gets a notification when it's ready."
+          },
+          {
+            "role": "assistant",
+            "content": "Async export is the right pattern for large datasets. Use a job queue like Celery or Bull."
+          }
+        ]
+      },
+      {
+        "session_id": 6,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We had a security audit. They found three issues."
+          },
+          {
+            "role": "assistant",
+            "content": "What were the findings?"
+          },
+          {
+            "role": "user",
+            "content": "First, SQL injection in the search endpoint. Second, missing CSRF protection. Third, overly permissive CORS policy."
+          },
+          {
+            "role": "assistant",
+            "content": "All three are common but serious. SQL injection is the highest priority."
+          },
+          {
+            "role": "user",
+            "content": "We fixed the SQL injection by using parameterized queries. The CSRF fix added token validation. CORS was restricted to our domain only."
+          },
+          {
+            "role": "assistant",
+            "content": "Good response. Parameterized queries eliminate SQL injection entirely."
+          },
+          {
+            "role": "user",
+            "content": "We also added rate limiting: 100 requests per minute per user for API endpoints, 10 per minute for auth endpoints."
+          },
+          {
+            "role": "assistant",
+            "content": "Rate limiting is essential. The stricter auth endpoint limit is smart — it slows brute force attacks."
+          },
+          {
+            "role": "user",
+            "content": "David suggested adding a WAF. We're evaluating Cloudflare vs AWS WAF."
+          },
+          {
+            "role": "assistant",
+            "content": "Both are solid. Cloudflare is easier to set up, AWS WAF integrates better with the AWS ecosystem."
+          }
+        ]
+      },
+      {
+        "session_id": 7,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're building a real-time notification system. The requirements are: WebSocket-based, supports 10K concurrent connections."
+          },
+          {
+            "role": "assistant",
+            "content": "10K WebSocket connections is achievable. What framework are you considering?"
+          },
+          {
+            "role": "user",
+            "content": "We're using TypeScript with Socket.IO for the WebSocket layer. The notification queue uses RabbitMQ."
+          },
+          {
+            "role": "assistant",
+            "content": "Socket.IO + RabbitMQ is a solid combination for real-time notifications."
+          },
+          {
+            "role": "user",
+            "content": "We need to handle reconnection gracefully. If a user disconnects, they should receive missed notifications on reconnect."
+          },
+          {
+            "role": "assistant",
+            "content": "Store notifications in a per-user queue. On reconnect, flush the queue before streaming new ones."
+          },
+          {
+            "role": "user",
+            "content": "We implemented a notification store with a 7-day TTL. Notifications are persisted in {tech['db']} and cached in {tech['cache']}."
+          },
+          {
+            "role": "assistant",
+            "content": "7-day TTL is reasonable. The {tech['db']} + {tech['cache']} combo gives you durability and speed."
+          },
+          {
+            "role": "user",
+            "content": "Load testing showed we can handle 15K concurrent connections with 99th percentile latency under 100ms."
+          },
+          {
+            "role": "assistant",
+            "content": "15K connections with p99 under 100ms is excellent performance."
+          }
+        ]
+      },
+      {
+        "session_id": 8,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're revamping the deployment pipeline. Currently it takes 30 minutes from merge to production."
+          },
+          {
+            "role": "assistant",
+            "content": "30 minutes is long. What's the breakdown?"
+          },
+          {
+            "role": "user",
+            "content": "Build: 5 min. Tests: 15 min. Staging deploy: 5 min. Smoke tests: 5 min."
+          },
+          {
+            "role": "assistant",
+            "content": "Tests are the bottleneck. Can you parallelize or cache dependencies?"
+          },
+          {
+            "role": "user",
+            "content": "We parallelized the test suite into 4 workers. Test time dropped from 15 to 4 minutes."
+          },
+          {
+            "role": "assistant",
+            "content": "Nice. 4x parallelization with near-linear speedup."
+          },
+          {
+            "role": "user",
+            "content": "We also added Docker layer caching. Build time dropped from 5 to 2 minutes."
+          },
+          {
+            "role": "assistant",
+            "content": "Layer caching is a big win for Docker builds."
+          },
+          {
+            "role": "user",
+            "content": "Total pipeline time is now 16 minutes. We're targeting under 10 minutes."
+          },
+          {
+            "role": "assistant",
+            "content": "16 minutes is good. Consider running smoke tests in parallel with staging deploy."
+          },
+          {
+            "role": "user",
+            "content": "We also added automatic rollback. If error rate exceeds 5% within 5 minutes of deploy, it auto-reverts."
+          },
+          {
+            "role": "assistant",
+            "content": "Automatic rollback based on error rate is a great safety net."
+          }
+        ]
+      },
+      {
+        "session_id": 9,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're switching from 2-week sprints to Kanban."
+          },
+          {
+            "role": "assistant",
+            "content": "What prompted the change?"
+          },
+          {
+            "role": "user",
+            "content": "Too many interrupts. We'd plan a sprint and then get 3 urgent production issues that blow up the plan."
+          },
+          {
+            "role": "assistant",
+            "content": "Kanban is better for high-interrupt environments. It gives you more flexibility."
+          },
+          {
+            "role": "user",
+            "content": "We set WIP limits: max 3 items per developer, max 8 items in the review column."
+          },
+          {
+            "role": "assistant",
+            "content": "WIP limits are the key to Kanban. They prevent context switching and improve flow."
+          },
+          {
+            "role": "user",
+            "content": "We also introduced code review SLAs. PRs must be reviewed within 4 hours. Eve is the review champion."
+          },
+          {
+            "role": "assistant",
+            "content": "4-hour SLA is aggressive but achievable with WIP limits. Review champions help maintain velocity."
+          },
+          {
+            "role": "user",
+            "content": "Our lead time dropped from 5 days to 2 days after switching to Kanban."
+          },
+          {
+            "role": "assistant",
+            "content": "5 days to 2 days is a significant improvement. The WIP limits are working."
+          }
+        ]
+      },
+      {
+        "session_id": 10,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're planning the Q3 roadmap. Three big items."
+          },
+          {
+            "role": "assistant",
+            "content": "What's on the roadmap?"
+          },
+          {
+            "role": "user",
+            "content": "First, migrate from REST to GraphQL for the mobile API. Second, add multi-tenancy support. Third, implement the audit log."
+          },
+          {
+            "role": "assistant",
+            "content": "All three are significant. What's the priority order?"
+          },
+          {
+            "role": "user",
+            "content": "Multi-tenancy is top priority — it's blocking our enterprise sales. GraphQL is second. Audit log is third."
+          },
+          {
+            "role": "assistant",
+            "content": "Multi-tenancy first makes sense if it's blocking revenue."
+          },
+          {
+            "role": "user",
+            "content": "For multi-tenancy, we're going with a shared database, separate schema approach."
+          },
+          {
+            "role": "assistant",
+            "content": "Shared DB separate schema is a good middle ground between shared everything and separate databases."
+          },
+          {
+            "role": "user",
+            "content": "The GraphQL migration will use Apollo Server. We'll keep the REST API for backward compatibility."
+          },
+          {
+            "role": "assistant",
+            "content": "Running both GraphQL and REST in parallel is the safe migration path."
+          },
+          {
+            "role": "user",
+            "content": "Carol wants the audit log to be immutable. We're considering an append-only table with cryptographic chaining."
+          },
+          {
+            "role": "assistant",
+            "content": "Cryptographic chaining gives you tamper-evidence. It's the gold standard for audit logs."
+          }
+        ]
+      }
+    ],
+    "qa": [
+      {
+        "question": "Where does Bob work?",
+        "answer": "TechFlow",
+        "type": "single-session",
+        "evidence_session_ids": [
+          1
+        ]
+      },
+      {
+        "question": "What programming language does Bob's team use?",
+        "answer": "TypeScript",
+        "type": "single-session",
+        "evidence_session_ids": [
+          1
+        ]
+      },
+      {
+        "question": "What was the root cause of the production incident?",
+        "answer": "Missing index on the MongoDB users table",
+        "type": "single-session",
+        "evidence_session_ids": [
+          2
+        ]
+      },
+      {
+        "question": "How was the production incident fixed?",
+        "answer": "Added a composite index on (email, status)",
+        "type": "single-session",
+        "evidence_session_ids": [
+          2
+        ]
+      },
+      {
+        "question": "What architecture decision was made for the payment module?",
+        "answer": "Modular monolith with separate package and own database schema",
+        "type": "single-session",
+        "evidence_session_ids": [
+          3
+        ]
+      },
+      {
+        "question": "How long does the test suite take to run?",
+        "answer": "45 minutes (30 min integration, 10 min E2E, 5 min unit)",
+        "type": "single-session",
+        "evidence_session_ids": [
+          4
+        ]
+      },
+      {
+        "question": "What was the data export time before and after optimization?",
+        "answer": "20 minutes before, 3 minutes after batch processing optimization",
+        "type": "single-session",
+        "evidence_session_ids": [
+          5
+        ]
+      },
+      {
+        "question": "What security issues were found in the audit?",
+        "answer": "SQL injection, missing CSRF protection, overly permissive CORS policy",
+        "type": "single-session",
+        "evidence_session_ids": [
+          6
+        ]
+      },
+      {
+        "question": "What is the rate limit for API endpoints?",
+        "answer": "100 requests per minute per user",
+        "type": "single-session",
+        "evidence_session_ids": [
+          6
+        ]
+      },
+      {
+        "question": "How many concurrent WebSocket connections can the notification system handle?",
+        "answer": "15K concurrent connections with p99 under 100ms",
+        "type": "single-session",
+        "evidence_session_ids": [
+          7
+        ]
+      },
+      {
+        "question": "What database does Bob's team use and what index was added after the incident?",
+        "answer": "MongoDB, composite index on (email, status)",
+        "type": "multi-session",
+        "evidence_session_ids": [
+          1,
+          2
+        ]
+      },
+      {
+        "question": "What is the deployment pipeline time and what optimizations were applied?",
+        "answer": "16 minutes total, optimized with 4x test parallelization and Docker layer caching",
+        "type": "multi-session",
+        "evidence_session_ids": [
+          4,
+          8
+        ]
+      },
+      {
+        "question": "What testing strategy was adopted and how does it affect the deployment pipeline?",
+        "answer": "Per-test schema isolation, parallelized to 4 workers, test time dropped from 15 to 4 minutes",
+        "type": "multi-session",
+        "evidence_session_ids": [
+          4,
+          8
+        ]
+      },
+      {
+        "question": "What happened first: the security audit or the architecture decision for payments?",
+        "answer": "The architecture decision came first (session 3), then the security audit (session 6)",
+        "type": "temporal",
+        "evidence_session_ids": [
+          3,
+          6
+        ]
+      },
+      {
+        "question": "In what order were the performance issues addressed across the project?",
+        "answer": "First API response time (index fix), then data export (batch processing), then deployment pipeline (parallelization)",
+        "type": "temporal",
+        "evidence_session_ids": [
+          2,
+          5,
+          8
+        ]
+      },
+      {
+        "question": "What process changes were made and in what order?",
+        "answer": "First added monitoring after incident, then switched to Kanban, then added code review SLAs",
+        "type": "temporal",
+        "evidence_session_ids": [
+          2,
+          9
+        ]
+      },
+      {
+        "question": "What is the company's annual revenue?",
+        "answer": "This information was not discussed",
+        "type": "adversarial",
+        "evidence_session_ids": []
+      },
+      {
+        "question": "What programming language does the frontend use?",
+        "answer": "The frontend language was not mentioned",
+        "type": "adversarial",
+        "evidence_session_ids": []
+      }
+    ]
+  },
+  {
+    "conversation_id": "synth_002",
+    "sessions": [
+      {
+        "session_id": 1,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "Hi! I just started working at DataSphere as a senior engineer."
+          },
+          {
+            "role": "assistant",
+            "content": "Welcome to DataSphere! That's exciting. What team are you on?"
+          },
+          {
+            "role": "user",
+            "content": "I'm on the platform team. My manager is David, who's been here for 3 years."
+          },
+          {
+            "role": "assistant",
+            "content": "Great to have an experienced manager. What's your tech stack looking like?"
+          },
+          {
+            "role": "user",
+            "content": "We use Rust for the backend, SQLite for the database, and Redis for caching. The CI/CD runs on Jenkins."
+          },
+          {
+            "role": "assistant",
+            "content": "Solid stack! Rust + SQLite is a proven combination."
+          },
+          {
+            "role": "user",
+            "content": "My first task is to refactor the authentication module. It currently uses session-based auth but we want to migrate to JWT."
+          },
+          {
+            "role": "assistant",
+            "content": "JWT migration is a common pattern. Make sure to handle token refresh and revocation properly."
+          },
+          {
+            "role": "user",
+            "content": "The codebase is about 150K lines. The auth module is in src/auth/ and it's about 3000 lines."
+          },
+          {
+            "role": "assistant",
+            "content": "3000 lines for an auth module is manageable. Focus on the interface boundaries first."
+          }
+        ]
+      },
+      {
+        "session_id": 2,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We had a production incident yesterday. The API response time spiked to 5 seconds."
+          },
+          {
+            "role": "assistant",
+            "content": "That's serious. Did you identify the root cause?"
+          },
+          {
+            "role": "user",
+            "content": "Turns out it was a missing index on the SQLite users table. A full table scan was triggered by a new query in the search endpoint."
+          },
+          {
+            "role": "assistant",
+            "content": "Classic issue. Missing indexes are one of the most common performance problems."
+          },
+          {
+            "role": "user",
+            "content": "We fixed it by adding a composite index on (email, status). Response time dropped back to 50ms."
+          },
+          {
+            "role": "assistant",
+            "content": "Great recovery. 5s to 50ms is a 100x improvement."
+          },
+          {
+            "role": "user",
+            "content": "David wants us to add query performance monitoring going forward."
+          },
+          {
+            "role": "assistant",
+            "content": "Proactive monitoring is the right approach. Consider pg_stat_statements for PostgreSQL."
+          },
+          {
+            "role": "user",
+            "content": "We're also adding a slow query log threshold of 200ms."
+          },
+          {
+            "role": "assistant",
+            "content": "200ms is a reasonable threshold for API queries."
+          }
+        ]
+      },
+      {
+        "session_id": 3,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're debating whether to use microservices or keep the monolith for the new payment feature."
+          },
+          {
+            "role": "assistant",
+            "content": "What's driving the discussion?"
+          },
+          {
+            "role": "user",
+            "content": "The payment module needs to be isolated for PCI compliance. But the team is only 5 people."
+          },
+          {
+            "role": "assistant",
+            "content": "With 5 people, a full microservices setup might be overkill. Consider a modular monolith with clear boundaries."
+          },
+          {
+            "role": "user",
+            "content": "We decided to go with a modular monolith. The payment module will be a separate package with its own database schema."
+          },
+          {
+            "role": "assistant",
+            "content": "Good call. Modular monolith gives you isolation without the operational overhead."
+          },
+          {
+            "role": "user",
+            "content": "We're using the Strangler Fig pattern to gradually extract it if needed later."
+          },
+          {
+            "role": "assistant",
+            "content": "Smart. The Strangler Fig pattern is perfect for this kind of gradual migration."
+          },
+          {
+            "role": "user",
+            "content": "The payment integration uses Stripe. We need to handle webhooks for payment status updates."
+          },
+          {
+            "role": "assistant",
+            "content": "Stripe webhooks are reliable. Make sure to verify the webhook signature and handle idempotency."
+          }
+        ]
+      },
+      {
+        "session_id": 4,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "Our test suite takes 45 minutes to run. It's becoming a bottleneck."
+          },
+          {
+            "role": "assistant",
+            "content": "45 minutes is too long. What's the breakdown?"
+          },
+          {
+            "role": "user",
+            "content": "30 minutes is integration tests hitting the real database. 10 minutes is E2E tests. 5 minutes is unit tests."
+          },
+          {
+            "role": "assistant",
+            "content": "The database-bound tests are the bottleneck. Consider parallelizing them or using testcontainers."
+          },
+          {
+            "role": "user",
+            "content": "We tried parallelizing but hit race conditions. The tests share a test database and create conflicting data."
+          },
+          {
+            "role": "assistant",
+            "content": "Use database transactions that rollback after each test, or give each test its own schema."
+          },
+          {
+            "role": "user",
+            "content": "We're going with per-test schema isolation. Each test gets its own schema that's created and dropped."
+          },
+          {
+            "role": "assistant",
+            "content": "That's the cleanest approach. It eliminates race conditions completely."
+          },
+          {
+            "role": "user",
+            "content": "We also added a flaky test detector. If a test fails twice in a row but passes on retry, it's flagged for investigation."
+          },
+          {
+            "role": "assistant",
+            "content": "Flaky test detection is valuable. It helps maintain test suite reliability."
+          }
+        ]
+      },
+      {
+        "session_id": 5,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We need to optimize the data export feature. It currently takes 20 minutes for 1M records."
+          },
+          {
+            "role": "assistant",
+            "content": "What's the current approach?"
+          },
+          {
+            "role": "user",
+            "content": "It loads all records into memory, transforms them, then writes to CSV. We're hitting OOM errors on large exports."
+          },
+          {
+            "role": "assistant",
+            "content": "Classic problem. Switch to streaming: process records in batches and write incrementally."
+          },
+          {
+            "role": "user",
+            "content": "We implemented batch processing with a 10K record batch size. Export time dropped to 3 minutes and memory usage is constant."
+          },
+          {
+            "role": "assistant",
+            "content": "Excellent. 20 minutes to 3 minutes with constant memory is a great improvement."
+          },
+          {
+            "role": "user",
+            "content": "We also added progress tracking. The user can see a progress bar and estimated time remaining."
+          },
+          {
+            "role": "assistant",
+            "content": "Progress tracking is a great UX improvement for long-running operations."
+          },
+          {
+            "role": "user",
+            "content": "Next we're looking at adding async export. The user starts the export, gets a notification when it's ready."
+          },
+          {
+            "role": "assistant",
+            "content": "Async export is the right pattern for large datasets. Use a job queue like Celery or Bull."
+          }
+        ]
+      },
+      {
+        "session_id": 6,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We had a security audit. They found three issues."
+          },
+          {
+            "role": "assistant",
+            "content": "What were the findings?"
+          },
+          {
+            "role": "user",
+            "content": "First, SQL injection in the search endpoint. Second, missing CSRF protection. Third, overly permissive CORS policy."
+          },
+          {
+            "role": "assistant",
+            "content": "All three are common but serious. SQL injection is the highest priority."
+          },
+          {
+            "role": "user",
+            "content": "We fixed the SQL injection by using parameterized queries. The CSRF fix added token validation. CORS was restricted to our domain only."
+          },
+          {
+            "role": "assistant",
+            "content": "Good response. Parameterized queries eliminate SQL injection entirely."
+          },
+          {
+            "role": "user",
+            "content": "We also added rate limiting: 100 requests per minute per user for API endpoints, 10 per minute for auth endpoints."
+          },
+          {
+            "role": "assistant",
+            "content": "Rate limiting is essential. The stricter auth endpoint limit is smart — it slows brute force attacks."
+          },
+          {
+            "role": "user",
+            "content": "Eve suggested adding a WAF. We're evaluating Cloudflare vs AWS WAF."
+          },
+          {
+            "role": "assistant",
+            "content": "Both are solid. Cloudflare is easier to set up, AWS WAF integrates better with the AWS ecosystem."
+          }
+        ]
+      },
+      {
+        "session_id": 7,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're building a real-time notification system. The requirements are: WebSocket-based, supports 10K concurrent connections."
+          },
+          {
+            "role": "assistant",
+            "content": "10K WebSocket connections is achievable. What framework are you considering?"
+          },
+          {
+            "role": "user",
+            "content": "We're using Rust with Socket.IO for the WebSocket layer. The notification queue uses RabbitMQ."
+          },
+          {
+            "role": "assistant",
+            "content": "Socket.IO + RabbitMQ is a solid combination for real-time notifications."
+          },
+          {
+            "role": "user",
+            "content": "We need to handle reconnection gracefully. If a user disconnects, they should receive missed notifications on reconnect."
+          },
+          {
+            "role": "assistant",
+            "content": "Store notifications in a per-user queue. On reconnect, flush the queue before streaming new ones."
+          },
+          {
+            "role": "user",
+            "content": "We implemented a notification store with a 7-day TTL. Notifications are persisted in {tech['db']} and cached in {tech['cache']}."
+          },
+          {
+            "role": "assistant",
+            "content": "7-day TTL is reasonable. The {tech['db']} + {tech['cache']} combo gives you durability and speed."
+          },
+          {
+            "role": "user",
+            "content": "Load testing showed we can handle 15K concurrent connections with 99th percentile latency under 100ms."
+          },
+          {
+            "role": "assistant",
+            "content": "15K connections with p99 under 100ms is excellent performance."
+          }
+        ]
+      },
+      {
+        "session_id": 8,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're revamping the deployment pipeline. Currently it takes 30 minutes from merge to production."
+          },
+          {
+            "role": "assistant",
+            "content": "30 minutes is long. What's the breakdown?"
+          },
+          {
+            "role": "user",
+            "content": "Build: 5 min. Tests: 15 min. Staging deploy: 5 min. Smoke tests: 5 min."
+          },
+          {
+            "role": "assistant",
+            "content": "Tests are the bottleneck. Can you parallelize or cache dependencies?"
+          },
+          {
+            "role": "user",
+            "content": "We parallelized the test suite into 4 workers. Test time dropped from 15 to 4 minutes."
+          },
+          {
+            "role": "assistant",
+            "content": "Nice. 4x parallelization with near-linear speedup."
+          },
+          {
+            "role": "user",
+            "content": "We also added Docker layer caching. Build time dropped from 5 to 2 minutes."
+          },
+          {
+            "role": "assistant",
+            "content": "Layer caching is a big win for Docker builds."
+          },
+          {
+            "role": "user",
+            "content": "Total pipeline time is now 16 minutes. We're targeting under 10 minutes."
+          },
+          {
+            "role": "assistant",
+            "content": "16 minutes is good. Consider running smoke tests in parallel with staging deploy."
+          },
+          {
+            "role": "user",
+            "content": "We also added automatic rollback. If error rate exceeds 5% within 5 minutes of deploy, it auto-reverts."
+          },
+          {
+            "role": "assistant",
+            "content": "Automatic rollback based on error rate is a great safety net."
+          }
+        ]
+      },
+      {
+        "session_id": 9,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're switching from 2-week sprints to Kanban."
+          },
+          {
+            "role": "assistant",
+            "content": "What prompted the change?"
+          },
+          {
+            "role": "user",
+            "content": "Too many interrupts. We'd plan a sprint and then get 3 urgent production issues that blow up the plan."
+          },
+          {
+            "role": "assistant",
+            "content": "Kanban is better for high-interrupt environments. It gives you more flexibility."
+          },
+          {
+            "role": "user",
+            "content": "We set WIP limits: max 3 items per developer, max 8 items in the review column."
+          },
+          {
+            "role": "assistant",
+            "content": "WIP limits are the key to Kanban. They prevent context switching and improve flow."
+          },
+          {
+            "role": "user",
+            "content": "We also introduced code review SLAs. PRs must be reviewed within 4 hours. Frank is the review champion."
+          },
+          {
+            "role": "assistant",
+            "content": "4-hour SLA is aggressive but achievable with WIP limits. Review champions help maintain velocity."
+          },
+          {
+            "role": "user",
+            "content": "Our lead time dropped from 5 days to 2 days after switching to Kanban."
+          },
+          {
+            "role": "assistant",
+            "content": "5 days to 2 days is a significant improvement. The WIP limits are working."
+          }
+        ]
+      },
+      {
+        "session_id": 10,
+        "dialogue": [
+          {
+            "role": "user",
+            "content": "We're planning the Q3 roadmap. Three big items."
+          },
+          {
+            "role": "assistant",
+            "content": "What's on the roadmap?"
+          },
+          {
+            "role": "user",
+            "content": "First, migrate from REST to GraphQL for the mobile API. Second, add multi-tenancy support. Third, implement the audit log."
+          },
+          {
+            "role": "assistant",
+            "content": "All three are significant. What's the priority order?"
+          },
+          {
+            "role": "user",
+            "content": "Multi-tenancy is top priority — it's blocking our enterprise sales. GraphQL is second. Audit log is third."
+          },
+          {
+            "role": "assistant",
+            "content": "Multi-tenancy first makes sense if it's blocking revenue."
+          },
+          {
+            "role": "user",
+            "content": "For multi-tenancy, we're going with a shared database, separate schema approach."
+          },
+          {
+            "role": "assistant",
+            "content": "Shared DB separate schema is a good middle ground between shared everything and separate databases."
+          },
+          {
+            "role": "user",
+            "content": "The GraphQL migration will use Apollo Server. We'll keep the REST API for backward compatibility."
+          },
+          {
+            "role": "assistant",
+            "content": "Running both GraphQL and REST in parallel is the safe migration path."
+          },
+          {
+            "role": "user",
+            "content": "David wants the audit log to be immutable. We're considering an append-only table with cryptographic chaining."
+          },
+          {
+            "role": "assistant",
+            "content": "Cryptographic chaining gives you tamper-evidence. It's the gold standard for audit logs."
+          }
+        ]
+      }
+    ],
+    "qa": [
+      {
+        "question": "Where does Carol work?",
+        "answer": "DataSphere",
+        "type": "single-session",
+        "evidence_session_ids": [
+          1
+        ]
+      },
+      {
+        "question": "What programming language does Carol's team use?",
+        "answer": "Rust",
+        "type": "single-session",
+        "evidence_session_ids": [
+          1
+        ]
+      },
+      {
+        "question": "What was the root cause of the production incident?",
+        "answer": "Missing index on the SQLite users table",
+        "type": "single-session",
+        "evidence_session_ids": [
+          2
+        ]
+      },
+      {
+        "question": "How was the production incident fixed?",
+        "answer": "Added a composite index on (email, status)",
+        "type": "single-session",
+        "evidence_session_ids": [
+          2
+        ]
+      },
+      {
+        "question": "What architecture decision was made for the payment module?",
+        "answer": "Modular monolith with separate package and own database schema",
+        "type": "single-session",
+        "evidence_session_ids": [
+          3
+        ]
+      },
+      {
+        "question": "How long does the test suite take to run?",
+        "answer": "45 minutes (30 min integration, 10 min E2E, 5 min unit)",
+        "type": "single-session",
+        "evidence_session_ids": [
+          4
+        ]
+      },
+      {
+        "question": "What was the data export time before and after optimization?",
+        "answer": "20 minutes before, 3 minutes after batch processing optimization",
+        "type": "single-session",
+        "evidence_session_ids": [
+          5
+        ]
+      },
+      {
+        "question": "What security issues were found in the audit?",
+        "answer": "SQL injection, missing CSRF protection, overly permissive CORS policy",
+        "type": "single-session",
+        "evidence_session_ids": [
+          6
+        ]
+      },
+      {
+        "question": "What is the rate limit for API endpoints?",
+        "answer": "100 requests per minute per user",
+        "type": "single-session",
+        "evidence_session_ids": [
+          6
+        ]
+      },
+      {
+        "question": "How many concurrent WebSocket connections can the notification system handle?",
+        "answer": "15K concurrent connections with p99 under 100ms",
+        "type": "single-session",
+        "evidence_session_ids": [
+          7
+        ]
+      },
+      {
+        "question": "What database does Carol's team use and what index was added after the incident?",
+        "answer": "SQLite, composite index on (email, status)",
+        "type": "multi-session",
+        "evidence_session_ids": [
+          1,
+          2
+        ]
+      },
+      {
+        "question": "What is the deployment pipeline time and what optimizations were applied?",
+        "answer": "16 minutes total, optimized with 4x test parallelization and Docker layer caching",
+        "type": "multi-session",
+        "evidence_session_ids": [
+          4,
+          8
+        ]
+      },
+      {
+        "question": "What testing strategy was adopted and how does it affect the deployment pipeline?",
+        "answer": "Per-test schema isolation, parallelized to 4 workers, test time dropped from 15 to 4 minutes",
+        "type": "multi-session",
+        "evidence_session_ids": [
+          4,
+          8
+        ]
+      },
+      {
+        "question": "What happened first: the security audit or the architecture decision for payments?",
+        "answer": "The architecture decision came first (session 3), then the security audit (session 6)",
+        "type": "temporal",
+        "evidence_session_ids": [
+          3,
+          6
+        ]
+      },
+      {
+        "question": "In what order were the performance issues addressed across the project?",
+        "answer": "First API response time (index fix), then data export (batch processing), then deployment pipeline (parallelization)",
+        "type": "temporal",
+        "evidence_session_ids": [
+          2,
+          5,
+          8
+        ]
+      },
+      {
+        "question": "What process changes were made and in what order?",
+        "answer": "First added monitoring after incident, then switched to Kanban, then added code review SLAs",
+        "type": "temporal",
+        "evidence_session_ids": [
+          2,
+          9
+        ]
+      },
+      {
+        "question": "What is the company's annual revenue?",
+        "answer": "This information was not discussed",
+        "type": "adversarial",
+        "evidence_session_ids": []
+      },
+      {
+        "question": "What programming language does the frontend use?",
+        "answer": "The frontend language was not mentioned",
+        "type": "adversarial",
+        "evidence_session_ids": []
+      }
+    ]
+  }
+]

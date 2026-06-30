@@ -1,0 +1,50 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/storage-core",
+    "crates/graph-core",
+    "crates/retrieval-core",
+    "crates/sync-engine",
+    "crates/evolution-core",
+    "crates/py-bindings",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+rust-version = "1.75"
+
+[workspace.dependencies]
+# ── Serialization ──────────────────────────────────────
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+bincode = "1"
+chrono = { version = "0.4", features = ["serde"] }
+
+# ── Storage ────────────────────────────────────────────
+rusqlite = { version = "0.33", features = ["bundled-full"] }
+
+# ── Graph ──────────────────────────────────────────────
+petgraph = "0.6"
+parking_lot = "0.12"
+lz4_flex = "0.11"
+
+# ── Retrieval ──────────────────────────────────────────
+usearch = ">=2.0, <2.25"
+tantivy = "0.22"
+
+# ── Async ──────────────────────────────────────────────
+tokio = { version = "1", features = ["full"] }
+notify = "6"
+blake3 = "1"
+
+# ── Benchmarks ─────────────────────────────────────────
+criterion = "0.5"
+
+# ── Frontmatter parsing ───────────────────────────────
+gray_matter = "0.3"
+
+# ── Python binding ─────────────────────────────────────
+pyo3 = { version = "0.22", features = ["extension-module"] }

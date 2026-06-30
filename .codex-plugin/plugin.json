@@ -1,0 +1,12 @@
+{
+  "name": "fourdmem",
+  "version": "1.0.0",
+  "description": "Four-dimensional cognitive memory for AI agents",
+  "mcpServers": {
+    "fourdmem": {
+      "command": "python",
+      "args": ["-m", "mcp_server.server"],
+      "cwd": "python"
+    }
+  }
+}

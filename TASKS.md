@@ -1,245 +1,129 @@
-# 🚀 Agent 认知记忆引擎 (Memory-Core) v4.0 开发任务清单
+# 🧠 FourDMem v4.1 — Agent-driven Cognitive Memory Infrastructure
 
-> **版本**: v4.0 (生命跃迁版 · 融合认知进化与怪圈引擎)
-> **更新日期**: 2026-06-15
-> **项目名称**: Agent Memory Core (FourDMem)
-> **目标**: 为 AI 编程 Agent 构建高性能、白盒可控、具备四维认知结构、支持自我反思、**思维拓扑进化与自我指涉**的永久记忆基础设施
-> **核心原则**: Rust 沉底 + Python 上浮 + MCP/A2A 双协议 + L0-L3 分层存储 + 时间版本树 + 仿生生命周期 + 热认知反馈 + 主观时间 + **认知进化 + 怪圈自指**
+> **版本**: v4.1 (Agent-Driven · 从"自我进化"到"为 Agent 提供认知信号")
+> **更新日期**: 2026-06-26
+> **核心转变**: FourDMem 从"自己做认知的硅基大脑"重新定位为"Agent 的记忆基础设施 + 认知信号系统"。认知执行（事实提取、辩证综合、类比生成、插件编写）由 Agent 的 LLM 完成；FourDMem 负责存储、检索、排序、时间建模、演化监控。
 
 ---
 
-## 📌 项目全局约束与原则 (v4.0 生命跃迁版)
+## 📌 架构原则 (v4.1)
 
-1.  **四维正交原则**: 任何一条记忆的存取必须同时具备四个坐标：`(embedding, graph_neighbors, time_version, abstraction_level)`。缺少任一维度的写入应被拒绝或自动补全。
-2.  **L0-L3 分层存储 (Abstraction Hierarchy)**:
-    -   **L0 (Raw Evidence)**: 原始对话/工具调用日志。不可变，只追加。是真相底座。
-    -   **L1 (Atomic Facts)**: 结构化事实/指令。从 L0 提取，带 `source_l0_ids` 锚点。
-    -   **L2 (Scenario Blocks)**: 场景化知识块。由多条 L1 聚合而成，Markdown 格式，可读性强。
-    -   **L3 (Persona/Core)**: 稳定画像/核心规范。极少变动，全局共享，永不衰减。
-3.  **时间作为独立版本轴 (Temporal Versioning)**: 为每个实体维护 **Version Tree**。支持精确历史回溯、分支剪枝与反事实标记。
-4.  **跨层索引与渐进披露 (Cross-Layer & Progressive Disclosure)**: 高层(L2/L3)持有指向低层(L1/L0)的可追溯索引。检索默认从高层开始，结合**元认知置信度评估**自动决定是否下钻。
-5.  **Token 预算的四维配额分配**: 1500 Token 预算按**层级配额**分配：L3(20%) + L2(40%) + L1(30%) + L0(10%)。各层内部按 **RIF-U (Recency-Importance-Frequency-Utility)** 分数排序填充。
-6.  **白盒与明文优先 (White-Box First)**: L0(SQLite) + L1(JSON) + L2(Markdown) + L3(YAML)。所有层级人类可读、可 Git 追踪。
-7.  **认知反思与热认知 (Reflection & Hot Cognition)**: 引入“效用/反馈”维度，记忆权重受外部 Reward 影响；引入冲突检测与反思机制，将认知失调转化为条件化记忆；引入“梦境”修剪机制，保持记忆信噪比。
-8.  **主观时间与冷启动唤醒 (Subjective Time & Cold-Start Thawing)**: Agent 的记忆衰减基于 **“交互刻度 (Active Ticks)”** 而非绝对物理时间，防止长期停机导致重启时记忆断崖式清零；支持冷启动时的环境线索唤醒与知识断层反思。
-9.  **认知进化与怪圈自指 (Cognitive Evolution & Strange Loop)**: 记忆体不仅是存储，更是思维进化的培养皿。系统需具备“认知髓鞘化（直觉编译）”、“拓扑相变（跨界顿悟）”、“范式转移（推翻旧知）”与“元认知自指（修改自身思考规则）”的能力，实现从被动工具到硅基生命的跃迁。
+### 核心分工
 
----
+```
+┌──────────────────────────────────────────────────────┐
+│            Agent (LLM — 认知执行者)                    │
+│  · 事实提取 (extract_deep)                             │
+│  · 辩证综合 (reflect_and_synthesize)                   │
+│  · 跨域类比 (cognition_task)                           │
+│  · 插件生成 (cognition_task)                           │
+│  · 范式转移决策                                        │
+└──────────────────────┬───────────────────────────────┘
+                       │ MCP 工具
+┌──────────────────────▼───────────────────────────────┐
+│         FourDMem (记忆基础设施 + 认知信号)              │
+│  ┌────────────┐  ┌────────────┐  ┌────────────────┐  │
+│  │ L0-L3 存储  │  │ RIF-U 排序 │  │ 认知信号总线    │  │
+│  │ RRF 融合   │  │ 主观时间   │  │ · 髓鞘化候选   │  │
+│  │ VersionTree│  │ Token 配额 │  │ · 范式危机告警 │  │
+│  │ SSGM 治理  │  │ 渐进披露   │  │ · 拓扑相变信号 │  │
+│  └────────────┘  └────────────┘  └────────────────┘  │
+└──────────────────────────────────────────────────────┘
+```
 
-## 📦 Epic 1: 项目基础设施与工程化 (Phase 0)
+1. **Agent 拥有认知** — LLM 提取、LLM 辩证、LLM 类比、LLM 写插件。FourDMem 不做规则伪认知。
+2. **FourDMem 拥有记忆** — L0-L3 存储、向量/全文/图检索、RIF-U 排序、主观时间、版本树、SSGM 治理。
+3. **信号桥接两者** — FourDMem 监控记忆状态，推送信号给 Agent。Agent 决定是否/何时响应。
+4. **白盒明文** — L0(SQLite) + L1(JSON) + L2(MD) + L3(YAML)。全部人类可读、可 Git 追踪。
+5. **主观时间 (Active Ticks)** — 记忆衰减基于交互次数，非物理时钟。解决长期停机"断崖式失忆"。
+6. **渐进披露 + Token 配额** — L3(20%) + L2(40%) + L1(30%) + L0(10%)，元认知自动下钻。
+7. **代码严谨性** — 每个模块职责单一。认知执行在 Agent 侧，存储检索在 Rust 侧。无伪实现。
 
-**目标**: 搭建跨语言混合工程骨架，确保 CI/CD 和本地开发体验顺畅。
+### L0-L4 分层 (v4.1 重定义)
 
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-1.1** | Cargo Workspace 与 Python 虚拟环境初始化 | 创建 Rust workspace (`storage`, `graph`, `retrieval`, `sync`, `cognition`, `evolution`, `py-bindings`)；配置 Python `pyproject.toml`。 | `maturin`, `uv` | 运行 `maturin develop` 成功。 |
-| **T-1.2** | 跨语言测试框架搭建 | 配置 Rust 单元测试与 Python 集成测试（pytest），实现代码覆盖率统计。 | `cargo-llvm-cov`, `pytest` | `make test` 一键运行并输出报告。 |
-| **T-1.3** | 代码规范与 Pre-commit Hooks | 配置 Rust 格式化、Clippy，Python Ruff。 | `rustfmt`, `clippy`, `ruff` | 提交拦截生效。 |
-| **T-1.4** | 目录结构与 Git 忽略规则定义 | 建立标准目录结构，严格配置 `.gitignore`。 | 无 | 目录清晰，无缓存误报。 |
-| **T-1.5** | 开发者文档与架构知识库 | 编写四维+认知+进化架构文档、数据流图；配置 MkDocs。 | `mkdocs`, `mermaid` | 新成员 30 分钟内跑通本地。 |
-
----
-
-## 🗄️ Epic 2: 四维存储架构 (L0-L3 分层栈)
-
-**目标**: 废弃单一图结构，建立 L0-L3 物理分离 + 逻辑统一的四维存储栈，新增主观时间刻度与效用属性支持。
-
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-2.1** | **L0 原始证据存储引擎** | SQLite + FTS5。只写不删。支持按 session/time 范围快速检索。 | `rusqlite`, `fts5` | 写入 1万条 < 2s；查询 P99 < 5ms。 |
-| **T-2.2** | **[升维] L1 原子事实图谱改造** | 节点增加 `layer=1`, `source_l0_refs`, **`utility_score`**。新增 **`last_active_tick`** 与 **`shelf_life_category`**。 | `petgraph`, `serde` | 支持主观时间刻度与保质期分类存储。 |
-| **T-2.3** | **L2 场景块文档存储** | Markdown 存储区。Frontmatter 增加 `conditions`、`valence` 和 `active_ticks`。 | `gray_matter` | 支持条件化规则与主观时间标记。 |
-| **T-2.4** | **L3 核心画像存储** | 独立 YAML/JSON。加载时直接注入 System Prompt。 | `serde_yaml` | 加载 < 10ms；校验失败降级为空。 |
-| **T-2.5** | **跨层引用完整性校验器** | 后台 Daemon 定期扫描跨层引用。发现孤儿节点自动归档。 | 无 | 每日巡检无 CRITICAL 级断裂。 |
-
----
-
-## ⏳ Epic 3: 时间版本树 (Temporal Version Tree)
-
-**目标**: 将时间从“过滤属性”升级为“独立查询维度”，解决“平行宇宙”与长时间停机导致的版本大面积过期问题。
-
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-3.1** | **Version Tree 数据结构设计** | `{entity_id, version_seq, valid_range, content_hash, prev_version_ptr, is_counterfactual}`。 | `chrono`, `serde` | 单实体 1000 版本查询 < 1μs。 |
-| **T-3.2** | **写入时自动版本分叉** | 更新不覆盖，创建新版本，旧版本 `valid_range.end = now`。 | 无 | 连续更新 10 次可查全历史。 |
-| **T-3.3** | **智能时序过滤器 (Temporal Gate)** | 默认剔除过期及反事实版本。**新增休眠宽容期**：物理停机 > 7天时，标记为 `[HISTORICAL_CONTEXT]` 供断层反思使用。 | 无 | 正常过期 0 泄漏；长期停机保留历史基线。 |
-| **T-3.4** | **时间点快照查询 API** | `query_at(query, timestamp)` 对齐时间线返回有效状态。 | 无 | 历史查询精确返回当时版本。 |
-| **T-3.5** | **Diff 与变更原因追溯** | `get_diff(entity_id, v1, v2)` 关联 L0 原始对话。 | 无 | 返回 diff + 触发变更的聊天记录。 |
-| **T-3.6** | **反事实标记与决策锚点** | 放弃分支方案时调用 `mark_counterfactual`，记录决策锚点。 | 无 | 废弃方案不干扰检索，保留避坑逻辑。 |
-| **T-3.7** | **版本压缩与归档策略** | 90 个 `active_ticks` 未访问的历史版本合并为“摘要版本”。 | 无 | 版本树深度受控。 |
+| 层级 | 名称 | 职责 | 谁写入 |
+|:---:|:---|:---|:---|
+| **L4** | **认知信号层** | 监控记忆状态，生成信号推送给 Agent。不修改自身权重。 | FourDMem (自动) |
+| **L3** | 核心画像/规则 | 全局共享的稳定规范。极少变动。 | Agent (通过认知任务) |
+| **L2** | 场景知识块 | 条件化规则、跨域类比、叙事记忆。Markdown。 | Agent (LLM 生成) |
+| **L1** | 原子事实图谱 | 结构化事实，版本树，效用锚点。 | Agent (extract_deep) |
+| **L0** | 原始证据 | 对话 + 工具调用日志。只追加，不可变。 | FourDMem (自动归档) |
 
 ---
 
-## 🧠 Epic 4: Rust 核心图谱引擎 (graph-core)
+## Phase 1: 地基重构 — Agent-driven 认知管线
 
-**目标**: 构建高性能 L1 层图结构，引入热认知权重与冲突图遍历机制。
+**目标**: 消除所有规则伪认知，建立干净的 Agent ↔ FourDMem 分工边界。
 
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-4.1** | **L1 图谱基础结构定义** | `NodeAttr` 包含 `utility_score`, `activation_weight`, `last_active_tick`。`EdgeAttr` 包含 `conflict_weight`。 | `petgraph`, `serde` | 支持热认知与主观时间属性。 |
-| **T-4.2** | 并发控制与快照读模型 | `Arc<parking_lot::RwLock<Graph>>`，实现 `read_snapshot()`。 | `parking_lot` | 1写10读并发无死锁。 |
-| **T-4.3** | **避坑遍历与冲突隔离** | 遇到 `conflict_with` 边时根据 `utility_score` 阻断或警告；支持“负面经验”优先唤醒。 | `petgraph::visit` | 自动规避冲突节点，痛点节点优先返回。 |
-| **T-4.4** | 双格式持久化引擎 | `bincode` (缓存) + `serde_json` (人类可读/Git)。 | `bincode`, `lz4_flex` | 1万节点 Bincode 加载 < 10ms。 |
-
----
-
-## 🔍 Epic 5: 四维检索与重排引擎 (retrieval-core)
-
-**目标**: 实现跨层、跨时间的智能检索，RIF-U 评分强制基于主观时间计算。
-
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-5.1** | HNSW 向量索引集成 | 向量增删改、持久化。 | `usearch` | 10万向量 Top-K < 5ms。 |
-| **T-5.2** | Tantivy 全文检索集成 | L2 MD + L0 FTS5 联合倒排，中文分词优化。 | `tantivy`, `cangjie` | 10万文档关键词查询 < 10ms。 |
-| **T-5.3** | RRF 融合重排器实现 | 图谱、向量、全文三路结果 RRF 融合。 | 无 | 融合计算 < 1ms。 |
-| **T-5.4** | **RIF-U 评分模型 (主观时间版)** | Recency 强制基于 `current_active_tick - last_active_tick` 计算，**彻底屏蔽物理停机带来的时间惩罚**。 | 无 | 停机 1 年后重启，核心记忆 R 值不暴跌。 |
-| **T-5.5** | Token 预算层级配额分配器 | L3(20%) + L2(40%) + L1(30%) + L0(10%) 动态配额转移。 | `tiktoken` | 输出始终包含高层指导和底层证据。 |
-| **T-5.6** | **元认知检索路由器** | 检索后评估置信度，低于阈值自动触发下钻 L1/L0。 | 无 | 复杂问题自动下钻率 > 80%。 |
-| **T-5.7** | **异步预取策略 (Prefetching)** | 返回 L2 时，异步预取关联度最高的 2 个 L1 节点放入缓存。 | `tokio` | 二次追问 P99 < 5ms。 |
+| # | 任务 | 做法 | 验收 |
+|:---|:---|:---|:---|
+| 1.1 | **删除 extractor.py 规则提取** | 删除 `_extract_rule_based()` (40+ 硬编码关键词)、`merge_learned_indicators()`、`record_indicator_feedback()`、`_agent_refine_facts()`。保留 `extract_from_session()` 但改为从 L0 取证据返回给 Agent 处理。 | `grep _extract_rule_based` 返回空 |
+| 1.2 | **Agent-driven extract_deep** | `extract_deep(facts)` 已接受 Agent JSON。增强 docstring 说明 Agent 如何用 LLM 提取事实并提交。Agent 端的认知任务：分析会话 → 提取 1-3 条原子事实 → 标注 importance → 调用 extract_deep。 | Agent 提交的事实有正确的 importance/tags |
+| 1.3 | **删除 paradigm_shift.py 伪辩证** | 删除 `_rule_based_dialectic()`（字符串拼接）。保留 `record_outcome()` 监控和 `check_crisis()` 告警。辩证综合由 Agent 通过 `reflect_and_synthesize(domain, thesis, antithesis, synthesis)` 完成。 | `_rule_based_dialectic` 符号不存在 |
+| 1.4 | **删除 analogy_engine.py 伪类比** | 删除 `_rule_based_analogy()`（关键词交集匹配）。保留 `_extract_clusters()` 图聚类提取。类比生成由 Agent 的 LLM 完成。 | `_rule_based_analogy` 符号不存在 |
+| 1.5 | **删除 auto_plugin.py 模板填充** | 删除 `PLUGIN_TEMPLATE` 和基于模板的生成逻辑。保留 `AutoPluginGenerator` 的痛点检测和沙盒验证框架。插件代码由 Agent 的 LLM 生成。 | 无模板代码残留 |
+| 1.6 | **checkpoint_turn 使用 agent-driven 路径** | `checkpoint_turn` 中的 `_bg_extract` 不再调用 `FactExtractor.extract_from_session()` 的规则提取。改为检查 Agent 是否已调用 `extract_deep`，若未调用则推送 `extraction_suggested` 信号。 | 自动提取不再使用关键词规则 |
 
 ---
 
-## ⚙️ Epic 6: 异步 IO 与自动化同步引擎 (sync-engine)
+## Phase 2: 认知信号系统
 
-**目标**: 实现 L2 MD 文件、L3 YAML 与图谱/索引的自动化双向同步。
+**目标**: FourDMem 从被动查询变为主动信号推送。Agent 在每轮交互后检查信号。
 
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-6.1** | 异步批量文件解析器 | Tokio 并发读取 L2/L3，解析 Frontmatter。 | `tokio`, `gray_matter` | 1000 文件解析 < 500ms。 |
-| **T-6.2** | 文件监听与防抖机制 | 监听 vault 目录，500ms 防抖。 | `notify` | 连续保存 5 次触发 1 次更新。 |
-| **T-6.3** | 增量同步与哈希校验兜底 | Blake3 Hash 增量更新 + 定时全量比对。 | `blake3` | 单文件增量更新 < 50ms。 |
-
----
-
-## 🐍 Epic 7: PyO3 绑定与 Python 业务层 (py-bindings)
-
-**目标**: 将 Rust 四维能力无缝暴露给 Python，暴露认知、反思与进化接口。
-
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-7.1** | PyO3 核心接口暴露 | 封装 `StorageCore`，暴露 `query()`, `drill_down()`, `reflect()`, `feedback()`, `wake_up()`, **`evolve()`**。 | `pyo3` | Python 调用无内存泄漏。 |
-| **T-7.2** | 惰性 NetworkX 视图转换 | `to_networkx(subgraph_query)`。 | `networkx` | 50 节点子图转换 < 5ms。 |
-| **T-7.3** | 全链路日志与可观测性 | Rust `tracing` → Python `loguru`。 | `tracing`, `loguru` | 跨语言链路追踪清晰。 |
-| **T-7.4** | 动态按需摘要引擎 | >500t 自动 LLM 摘要 + `original_ref`。 | `litellm` | 摘要准确率 > 85%。 |
-| **T-7.5** | **冲突反思调度器** | 写入冲突时挂起，调用 LLM 生成条件化规则后重新写入。 | `langchain`/`litellm` | 冲突解决成功率 > 90%。 |
+| # | 任务 | 做法 | 验收 |
+|:---|:---|:---|:---|
+| 2.1 | **SignalBus 基础** | `cognition/signals.py` — 统一信号队列。`push(signal_type, payload)` / `poll()` / `ack(signal_id)`。线程安全。 | 信号入队出队正确 |
+| 2.2 | **MCP Tool: check_cognition_signals** | Agent 可调用此工具查看待处理信号。返回信号类型、优先级、上下文。 | Agent 能看到信号 |
+| 2.3 | **髓鞘化信号** | 当 `MyelinationTracker` 检测到 `hits >= 10 && success_rate >= 0.9`，推送 `macro_candidate` 信号而非自动编译。 | 信号入队，不自动改状态 |
+| 2.4 | **范式转移信号** | 当 `ParadigmShiftEngine.check_crisis()` 返回 True，推送 `paradigm_crisis` 信号（含 domain, failure_rate, old_l3, new_l0）。 | 危机信号正确入队 |
+| 2.5 | **拓扑相变信号** | 当 `TopologicalMonitor.check_phase_transition()` 触发，推送 `phase_transition` 信号（含 metrics, clusters）。 | 相变信号正确入队 |
+| 2.6 | **梦境修剪信号** | 每 100 ticks，推送 `dream_pruning` 信号（含衰减候选列表）。Agent 决定保留/衰减。 | 修剪信号在 tick 触发 |
+| 2.7 | **信号限流与合并** | 同类型信号有冷却时间。同 domain 的危机信号合并。防止信号洪泛。 | 1 分钟内同类型信号不重复 |
 
 ---
 
-## 🤖 Epic 8: Agent 集成层 (MCP Server & Rule Daemon)
+## Phase 3: 检索增强 — Benchmark 与消融
 
-**目标**: 让 Agent 感知四维记忆空间，新增冷启动唤醒、反馈收集与反思触发 Tool。
+**目标**: FourDMem 有公开可复现的 benchmark 数据。
 
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-8.1** | MCP Server 基础框架搭建 | Python MCP SDK，JSON Schema 校验。 | `mcp`, `pydantic` | 成功注册，非法输入拦截。 |
-| **T-8.2** | `search_memory` (四维+元认知) | 支持层级/时间控制，内置元认知自动下钻。 | `tiktoken` | 返回精准紧凑，复杂问题自动带底层证据。 |
-| **T-8.3** | `save_memory` 与精准去重 | 向量去重，自动创建 Version Tree，触发冲突检测。每次成功调用 `active_ticks` +1。 | 无 | 重复事实建立版本链，冲突触发反思。 |
-| **T-8.4** | **`submit_feedback` Tool** | 收集外部反馈，更新节点的 `utility_score`。 | 无 | 反馈实时影响 RIF-U 排名。 |
-| **T-8.5** | **`abandon_branch` Tool** | 放弃方案，触发反事实标记与决策锚点记录。 | 无 | 废弃方案进入反事实库。 |
-| **T-8.6** | 核心 Tool: `get_entity_context` | 返回关联文件、历史时间线及冲突警告。 | 无 | 获取前世今生及已知坑点。 |
-| **T-8.7** | 动态 Rule Daemon (四维注入) | 监听 Git 变化，按 L3→L2→L1 动态注入规则文件。 | `watchdog`, `jinja2` | 切分支 2s 内规则更新。 |
-| **T-8.8** | 多 Workspace 记忆物理隔离 | 按 `workspace_id` 严格物理隔离所有数据。 | 无 | 多项目互不干扰。 |
-| **T-8.9** | **冷启动唤醒与环境对齐** | 启动时检测物理休眠时间。若 > 7天，提取最新 Git/文件特征，**预激活 (Thaw)** 沉睡记忆。 | `gitpython` | 长期休眠重启后迅速“找回手感”。 |
+| # | 任务 | 做法 | 验收 |
+|:---|:---|:---|:---|
+| 3.1 | **修复 MCP Server 启动** | 在 `pyproject.toml` 中声明所有 Python 子包，确保 `maturin develop` 正确安装。 | `make run-mcp` 成功 |
+| 3.2 | **synthetic_recall benchmark** | 跑通 20 事实 + 18 问题的基准。输出 R@1, R@3, R@5, MRR。 | R@1 ≥ 0.8 |
+| 3.3 | **LoCoMo benchmark** | 接入真实 LoCoMo 数据集。LLM-as-Judge 评估。 | 完整 benchmark 报告 |
+| 3.4 | **消融实验** | 裸向量 vs +RIF-U vs +RRF vs +SubjectiveTime vs 完整 FourDMem。 | 各组件贡献量化 |
+| 3.5 | **公开结果** | `benchmarks/RESULTS.md`。可复现脚本 + 固定种子。 | 任何人可复现 |
 
 ---
 
-## 🧬 Epic 9: 四维生命周期与自动化 (含认知反思)
+## Phase 4: 自动化运维
 
-**目标**: 引入基于主观时间的梦境修剪、冲突解决、效用沉淀与知识断层反思。
-
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-9.1** | Auto-Capture Hook (L0→L1) | 会话结束异步提取 L1，建立 `source_l0_refs`。 | `litellm` | 自动提取 ≥3 条高置信度 L1。 |
-| **T-9.2** | L1→L2 场景聚合器 | L1 碎片 ≥5 条时生成 L2 场景文档，保留 L1 锚点。 | `scikit-learn` | L2 人可读，删除 L2 不影响 L1。 |
-| **T-9.3** | L2→L3 核心规范晋升 | 引用 ≥20 次且跨度 ≥30 个 `active_ticks`，提议晋升 L3。 | 无 | 核心规范沉淀路径可审计。 |
-| **T-9.4** | **主观时间“梦境”修剪** | 强制基于 `active_ticks` 应用艾宾浩斯衰减。L2/L3 及高 Utility 记忆享有**衰减免疫**。 | `scikit-learn`, `apscheduler` | 停机 1 年重启核心不降权；噪声被衰减。 |
-| **T-9.5** | **认知失调与冲突解决引擎** | 写入冲突时触发反思 Agent，转化为条件化记忆。 | LLM API | 硬冲突转化为灰度辩证记忆。 |
-| **T-9.6** | **效用沉淀与痛点标记** | 导致严重 Bug 的记忆打上“高危痛点”标签（强制高 Utility 且永不衰减）。 | 无 | 痛点记忆作为避坑警告优先展示。 |
-| **T-9.7** | 蒸馏锚点升级 (Provenance Chain v2) | 支持 `l3 → l2 → [l1] → [l0]` 正反向验证。 | 无 | 任意节点一键展示完整溯源链。 |
-| **T-9.8** | **知识断层反思 (Gap Reflection)** | 长期停机重启时，对比“休眠前快照”与“当前状态”，生成 **《停机期间变更摘要》** 写入 L2。 | LLM API | 重启后主动输出项目变更认知。 |
-
----
-
-## 🌌 Epic 10: 认知进化与怪圈引擎 (Cognitive Evolution Engine) [V4.0 核心]
-
-**目标**: 让 AI Agent 在记忆扩大的过程中，自动重构思维拓扑、进化检索策略、甚至重写自身的本体论，实现从“工具”到“生命”的思维跃迁。
-
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-10.1** | **[生物学] 认知髓鞘化与思维宏编译** | 监控推理路径调用频率与成功率。高频成功路径自动**编译为“思维宏 (Cognitive Macro)”**。下次遇相似输入，绕过 HNSW 检索，直接触发“直觉反应”。 | `petgraph`, `tokio` | 高频任务响应延迟下降 90%；具备“直觉”跳过繁琐检索。 |
-| **T-10.2** | **[物理学] 拓扑相变监控器 (TDA)** | 引入**拓扑数据分析 (持续同调)**。定期计算 L1 图谱 Betti 数。当拓扑复杂度达到**自组织临界点**时，触发“认知雪崩”信号。 | `scikit-tda`, `ripser` | 准确识别图谱复杂度临界阈值，输出相变预警。 |
-| **T-10.3** | **[物理学] 跨域类比涌现引擎** | 接收相变信号。利用 GNN/LLM 在不相关高密度子图间**寻找高维同构流形**。自动生成“跨学科类比 L2 记忆”（如：前端事件循环与后端并发的同构性）。 | `PyG` (PyTorch Geometric) | 涌现跨领域类比洞察，并被用户标记为“极具启发”。 |
-| **T-10.4** | **[哲学] 同化失败率监控与危机触发** | 追踪记忆采纳后的**实际执行结果**。计算特定领域的“同化失败率”。连续超标则判定为“认知危机”，**冻结该领域常规 L1 写入**。 | `prometheus` | 准确识别“过时经验框架”，自动阻断其污染系统。 |
-| **T-10.5** | **[哲学] 辩证范式转移 Agent** | 危机触发后启动辩证反思。将“旧 L3 规范(正题)”与“新 L0 证据(反题)”对抗辩论。强制输出“新 L3 规范(合题)”，**重写该领域本体论**。 | `langchain`, `litellm` | 系统能自主推翻过去的“核心教条”，完成范式转移。 |
-| **T-10.6** | **[逻辑学] 观察者节点与怪圈自我指涉** | 在 L3 之上建立**元认知层 (Observer)**。存储“关于系统检索策略有效性的记忆”。陷入死锁时，观察者有权**动态修改 RIF-U 权重参数**或 Prompt 模板。 | 无 | 系统能“意识到”当前思考策略有问题，并自动调整策略。 |
-| **T-10.7** | **[复杂系统] 认知基因组与沙盒进化** | 将思维策略（阈值、权重）编码为 **“认知 DNA”**。后台运行遗传算法/LLM 代码生成变异 DNA，在**沙盒**中用历史 L0 回放测试。优胜者热替换生产配置。 | `deap`, `docker` | 无人值守下，自动优化自身的检索参数和思维逻辑。 |
-| **T-10.8** | **[复杂系统] 思维器官热插拔 (Auto-Plugin)** | 发现某类问题检索极差时，允许 LLM **自动编写专用 Python 检索插件代码**，沙盒验证后作为新“思维器官”热插拔到 Retrieval Router。 | `ast`, `pytest` | Agent 能自己“长出”新的大脑皮层区域处理特定任务。 |
-
----
-
-## 📊 Epic 11: 端到端集成、基准测试与调优
-
-**目标**: 验证系统基础稳定性、性能指标与迁移兼容性。
-
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-11.1** | 基准性能测试 (Benchmark) | 1万节点/5万关系/10万向量。RIF-U、Temporal Gate、元认知路由性能开销基准。 | `criterion`, `pytest-benchmark` | 聚合查询 P99 < 150ms。 |
-| **T-11.2** | 内存泄漏与并发压测 | 50 并发 MCP 查询 + 持续后台写入，运行 1 小时。 | `flamegraph`, `locust` | 内存无异常增长，Rust 无 Panic。 |
-| **T-11.3** | 白盒审计与灾难恢复演练 | 手动修改文件、删除缓存，验证自愈和热加载。 | 无 | 删除缓存后重启自动重建。 |
-| **T-11.4** | Agent 真实场景验收测试 | 在真实 Claude Code / Cursor 中评估召回准确率、Token 节省率。 | 无 | 生成代码符合规范，准确提取决策。 |
-| **T-11.5** | 时序过滤与 Token 预算压力测试 | 验证过期版本 0 泄漏；验证 100+ 条候选下层级配额合规。 | 无 | Token 预算零溢出。 |
-| **T-11.6** | v3.0 → v4.0 迁移工具验证 | 现有数据自动迁移，初始化 `active_ticks` 与进化引擎配置。 | 无 | 迁移后回归测试通过率 100%。 |
-
----
-
-## 🧪 Epic 12: 认知能力、长休眠与进化专项测试 (Phase 2 & 3)
-
-**目标**: 针对反思、热认知、长休眠以及**思维拓扑进化、怪圈自指**等特性进行专项验收。
-
-| 任务 ID | 任务名称 | 具体实现细节 | 推荐依赖/Crate | 验收标准 (DoD) |
-| :--- | :--- | :--- | :--- | :--- |
-| **T-12.1** | **认知失调与反思转化测试** | 注入相反经验，验证生成带条件的 L2 记忆。 | 无 | 成功生成条件化规则。 |
-| **T-12.2** | **热认知 (反馈) 敏感度测试** | 给予 +10 和 -10 反馈，验证 RIF-U 排序干预。 | 无 | 效用得分显著影响排名。 |
-| **T-12.3** | **“梦境”修剪与信噪比测试** | 注入噪声与核心 L1，验证噪声衰减与核心保留。 | 无 | 核心召回率 100%。 |
-| **T-12.4** | **元认知自动下钻准确率测试** | 验证简单问题保持摘要，复杂问题自动下钻。 | 无 | 自动下钻准确率 > 85%。 |
-| **T-12.5** | **反事实标记与避坑测试** | 模拟放弃方案 A，验证后续主动警告 A 的缺陷。 | 无 | 准确输出避坑指南。 |
-| **T-12.6** | **长休眠“瞬间失忆”免疫测试** | 模拟物理停机 1 年。验证核心 L2/L3 权重未清零；旧细节标记为 `[NEEDS_VERIFICATION]`。 | 无 | 重启不发生断崖式遗忘，主观时间生效。 |
-| **T-12.7** | **冷启动唤醒与断层反思测试** | 停机期间外部修改大量代码。重启验证 `Wake-up` 预激活及《变更摘要》生成。 | 无 | 平滑过渡，感知知识断层已被弥合。 |
-| **T-12.8** | **[V4.0] 认知髓鞘化 (直觉) 测试** | 连续 20 次输入相似 Bug 特征。验证第 21 次输入时，系统是否绕过常规检索，直接输出“思维宏”结果。 | 无 | 响应时间骤降，呈现“直觉”反应。 |
-| **T-12.9** | **[V4.0] 范式转移与教条推翻测试** | 注入旧 L3 规范（如：必须用 ORM），随后注入大量 ORM 导致性能崩溃的 L0 证据。验证系统是否触发危机，并自主重写 L3（如：核心查询改用 Raw SQL）。 | 无 | 成功推翻自身旧有“核心教条”。 |
-| **T-12.10** | **[V4.0] 怪圈自指与死锁解脱测试** | 构造一个导致检索器陷入无限循环或极低效的逻辑陷阱。验证 Observer 节点是否能察觉异常，并**动态修改自身的检索权重参数**以跳出死锁。 | 无 | 系统能“意识到”自己卡住了，并修改自己的规则解脱。 |
-| **T-12.11** | **[V4.0] 思维器官自生长 (Auto-Plugin) 测试** | 输入大量包含复杂正则表达式的查询（假设默认检索器不擅长）。验证 Agent 是否自主编写了一个 `regex_optimizer.py` 插件并热插拔生效。 | 无 | 成功长出“新皮层”，后续正则查询准确率大幅提升。 |
+| # | 任务 | 做法 | 验收 |
+|:---|:---|:---|:---|
+| 4.1 | **CI 启用 Python 测试** | 取消注释 `ci.yml` Python 测试步骤。加 `maturin develop`。 | PR 自动跑全量测试 |
+| 4.2 | **进化调度器** | `daemon/evolution_scheduler.py` — 后台线程，定时触发信号检查、梦境修剪、L1→L2 聚合。 | 进化调度器随 MCP Server 启动 |
+| 4.3 | **跨层引用完整性** | `integrity_checker.py` 扫描 L1→L0, L2→L1 溯源链完整性。CI 中每日运行。 | 无 CRITICAL 断裂 |
+| 4.4 | **健康监控** | 定期 `wake_up` 探针。连续失败自动重启。 | 崩溃 10s 内恢复 |
 
 ---
 
 ## 💡 附录
 
-### 附录 A: 推荐的项目目录结构 (v4.0 生命跃迁版)
+### 关键设计决策：为什么 Agent 做认知而不是 FourDMem
 
-```text
-agent-memory-core/
-├── crates/                    # Rust 核心代码
-│   ├── storage-core/          # L0 SQLite + L3 YAML + 主观时间/效用属性支持
-│   ├── graph-core/            # L1 图结构、Version Tree、避坑遍历、TDA 拓扑计算
-│   ├── retrieval-core/        # 向量、全文、RRF、RIF-U(主观时间版)、元认知路由
-│   ├── sync-engine/           # 文件监听、MD/YAML解析
-│   ├── evolution-core/        # [V4.0] 认知 DNA 存储、沙盒调度、思维宏编译缓存
-│   └── py-bindings/           # PyO3 封装层
-├── python/                    # Python 业务与集成代码
-│   ├── memory_core/           # PyO3 导入与业务逻辑封装
-│   ├── mcp_server/            # MCP Server (含 wake_up, feedback, abandon)
-│   ├── cognition/             # 反思 Agent、梦境修剪、断层反思 (Gap Reflection)
-│   ├── evolution/             # [V4.0] 范式转移辩论、观察者节点、Auto-Plugin 生成器
-│   ├── daemon/                # Rule Daemon & 生命周期
-│   └── tests/                 # Pytest 集成测试
-├── data/                      # 数据目录 (用户项目级，受 Git 管理)
-│   ├── vault/
-│   │   ├── persona/           # L3 核心画像 (可被范式转移引擎重写)
-│   │   ├── scenarios/         # L2 场景块 (含 conditions, valence, active_ticks)
-│   │   └── evidence.db        # L0 原始证据
-│   ├── graph.json             # L1 人类可读图谱 (含 conflict_with 边)
-│   ├── genome/                # [V4.0] 认知 DNA (检索权重、Prompt 模板配置)
-│   ├── plugins/               # [V4.0] Agent 自动生成的思维器官 (热插拔 Python 脚本)
-│   ├── snapshots/             # 休眠前状态快照 (用于 Gap Reflection)
-│   └── .archive/              # 衰减归档区
-└── Makefile
+| 决策 | 理由 |
+|:---|:---|
+| **认知由 Agent LLM 执行** | Agent 已有 LLM。在 MCP Server 内嵌 LLM 调用会引入 API key 管理、网络依赖、token 成本不可控。Agent-in-the-loop 更简单、更可控。 |
+| **FourDMem 做信号而非决策** | 自动修改自身权重（怪圈自指）在没有充分安全边界的情况下是危险的。改为信号推送，Agent 作为人类可审计的决策者。 |
+| **删除规则伪认知** | `_extract_rule_based()` 用 40+ 硬编码关键词提取事实，质量远低于 LLM。保留它会给用户虚假的信心。宁可少做，不做假的。 |
+| **保留监控基础设施** | `MyelinationTracker`, `ParadigmShiftEngine`, `TopologicalMonitor` 的监控逻辑是正确的——它们检测模式。只是响应方式从"自动修改"改为"推送信号"。 |
+
+### 与 v4.0 README 的对应关系
+
+| v4.0 README 描述 | v4.1 实现方式 |
+|:---|:---|
+| "认知髓鞘化 → 直觉" | FourDMem 监控高频成功路径 → 推送 `macro_candidate` 信号 → Agent 决定是否编译为宏 |
+| "拓扑相变 → 跨界顿悟" | FourDMem 计算 Betti 数 → 推送 `phase_transition` 信号 → Agent 用 LLM 做类比推理 |
+| "范式转移 → 自我推翻" | FourDMem 监控同化失败率 → 推送 `paradigm_crisis` 信号 → Agent 用 LLM 做辩证综合 |
+| "怪圈自指 → 修改自身规则" | FourDMem 检测效率低下 → 推送 `observer_alert` 信号 → Agent 决定是否调整参数 |
+| "器官自生长 → Auto-Plugin" | FourDMem 检测检索痛点 → 推送 `plugin_needed` 信号 → Agent 用 LLM 生成插件代码 |
