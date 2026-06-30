@@ -1,9 +1,11 @@
-# RIF-U Score, Quota & Cognitive Evolution Configuration Examples (v4.0)
+# RIF-U Score, Quota & Cognitive Evolution Configuration
 
-> **说明**: 本配置文件定义了 Agent Memory Core v4.0 的核心运行参数。从 v3.0 的 RIF 评分升级为 **RIF-U (引入 Utility 效用维度)**，时间计算全面转向**主观时间 (Active Ticks)**，并新增了**元认知路由**与**认知进化引擎**的控制参数。
+> **说明**: 本文档定义了 FourDMem 的核心运行参数规范。系统采用 **RIF-U (Recency, Importance, Frequency, Utility)** 四维评分，时间计算基于**主观时间 (Active Ticks)**，并包含**元认知路由**与**认知进化引擎**的控制参数。
+>
+> ⚠️ 注意：以下是参数规范，实际值硬编码在 Rust/Python 源码中。
 
 ```yaml
-# config/memory_v4.yaml
+# FourDMem 参数规范 (非实际配置文件)
 
 # ==========================================
 # 1. Token 预算与层级配额 (Token Budget & Quota)
@@ -125,7 +127,7 @@ evolution:
     # 同化失败率 (检索出的记忆被采纳后导致报错的比例) 监控窗口
     failure_rate_window_ticks: 20
     # 失败率超过此阈值，冻结该领域写入，触发辩证反思 Agent
-    crisis_trigger_failure_rate: 0.40
+    crisis_trigger_failure_rate: 0.30   # 代码实际值: 0.30
 
   # [复杂系统] 认知基因组与沙盒 (Cognitive Genome & Sandbox)
   genome_sandbox:
@@ -136,3 +138,17 @@ evolution:
     sandbox_memory_limit_mb: 256
     # 变异后的 DNA (检索权重/Prompt) 必须在沙盒中超过此适应度分数才能热替换
     min_fitness_score_for_hotswap: 0.85
+```
+
+## 源码位置
+
+| 参数 | 源文件 |
+|:---|:---|
+| RIF-U 权重 | `crates/retrieval-core/src/rif_u.rs` |
+| Token 配额 | `crates/retrieval-core/src/token_budget.rs` |
+| 置信度阈值 | `crates/retrieval-core/src/router.rs` |
+| 梦境修剪 | `python/mcp_server/lifecycle.py` |
+| 髓鞘化 | `python/evolution/myelination.py` |
+| 范式转移 | `python/evolution/paradigm_shift.py` |
+| 拓扑相变 | `python/evolution/topology.py` |
+| 遗传沙盒 | `python/evolution/genetic_sandbox.py` |

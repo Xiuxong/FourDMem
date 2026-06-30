@@ -1,6 +1,6 @@
-# FDRFlow: Full Data Retrieval & Evolution Flow (v4.0)
+# FDRFlow: Full Data Retrieval & Evolution Flow
 
-> **说明**: 本流程图展示了 Agent Memory Core v4.0 的全链路数据检索与认知进化流程。相比 v3.0 的单向管道，v4.0 引入了**L4 观察者干预 (怪圈自指)**、**思维宏短路 (直觉)**、**元认知自动下钻**以及**效用反馈闭环**，使检索过程具备“生命体”的反射与自适应特征。
+> **说明**: 本流程图展示了 FourDMem 的全链路数据检索与认知进化流程。系统引入了**L4 观察者干预 (怪圈自指)**、**思维宏短路 (直觉)**、**元认知自动下钻**以及**效用反馈闭环**，使检索过程具备"生命体"的反射与自适应特征。
 
 ```text
 Agent Query / Environment Context
@@ -37,7 +37,7 @@ Agent Query / Environment Context
        │                   │                                            │
        ▼                   │                                            │
 ┌──────────────────┐       │                                            │
-│ RRF Fusion       │ ← 三路融合                                        │
+│ RRF Fusion       │ ← 四路融合 (Tantivy BM25 + FTS5 + Graph + Vector)  │
 └──────┬───────────┘       │                                            │
        │                   │                                            │
        ▼                   │                                            │
